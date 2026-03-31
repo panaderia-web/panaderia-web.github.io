@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Panadería</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fef7e8 0%, #fcf3e3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #8B4513;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subtitle {
+            color: #8B7355;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #eeddcb;
+        }
+
+        .info-bar {
+            background: #f0e5d8;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4caf50;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .btn-refresh {
+            background: #8B4513;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn-refresh:hover {
+            background: #A0522D;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eeddcb;
+        }
+
+        th {
+            background: #f9f0e4;
+            color: #8B4513;
+            font-weight: 600;
+        }
+
+        td input {
+            width: 100px;
+            padding: 8px;
+            border: 1px solid #eeddcb;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        td input:focus {
+            outline: none;
+            border-color: #D2691E;
+        }
+
+        .btn-save {
+            background: #D2691E;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-save:hover {
+            background: #B85C1A;
+        }
+
+        .btn-save-all {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+
+        .btn-save-all:hover {
+            background: #45a049;
+        }
+
+        .btn-reset {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-reset:hover {
+            background: #c53030;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.loading {
+            background: #e2e3e5;
+            color: #383d41;
+            display: block;
+        }
+
+        .footer {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid #eeddcb;
+            text-align: center;
+            color: #8B7355;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            th, td {
+                padding: 8px;
+                font-size: 12px;
+            }
+            td input {
+                width: 70px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>
+        <span>🍞</span>
+        Panel de Administración
+    </h1>
+    <div class="subtitle">Gestión de precios de ingredientes</div>
+
+    <div class="info-bar">
+        <div class="status">
+            <div class="status-dot"></div>
+            <span>Conectado a GitHub</span>
+        </div>
+        <button class="btn-refresh" onclick="cargarDatos()">🔄 Actualizar lista</button>
+    </div>
+
+    <div id="tablaContainer">
+        <div class="message loading">Cargando ingredientes...</div>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <button class="btn-save-all" onclick="guardarTodos()">💾 Guardar todos los cambios</button>
+        <button class="btn-reset" onclick="resetearCambios()">⟳ Resetear cambios</button>
+    </div>
+
+    <div id="mensaje" class="message"></div>
+    <div class="footer">
+        ⚡ Los cambios se reflejan en tu sitio web en 1-2 minutos
+    </div>
+</div>
+
+<script>
+    // Configuración de GitHub
+    const REPO_OWNER = "panaderia-web";
+    const REPO_NAME = "panaderia-web.github.io";
+    const FILE_PATH = "assets/datos/precios.json";
+    const BRANCH = "main";
+
+    let datosOriginales = [];
+    let datosEditados = [];
+
+    // Obtener el token desde el almacenamiento local
+    function getToken() {
+        return localStorage.getItem('github_token');
+    }
+
+    // Solicitar token al usuario
+    function solicitarToken() {
+        const token = prompt(
+            "🔐 Se necesita un token de GitHub para guardar cambios.\n\n" +
+            "📝 Cómo obtenerlo:\n" +
+            "1. Ve a: https://github.com/settings/tokens\n" +
+            "2. Haz clic en 'Generate new token (classic)'\n" +
+            "3. Dale un nombre: 'Panel Panadería'\n" +
+            "4. Marca 'repo' (todos los permisos de repositorio)\n" +
+            "5. Genera y copia el token\n\n" +
+            "Pega el token aquí:"
+        );
+        if (token && token.trim()) {
+            localStorage.setItem('github_token', token.trim());
+            return token.trim();
+        }
+        return null;
+    }
+
+    // Cargar datos desde GitHub
+    async function cargarDatos() {
+        const container = document.getElementById('tablaContainer');
+        container.innerHTML = '<div class="message loading">Cargando ingredientes...</div>';
+        
+        try {
+            const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}?ref=${BRANCH}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            const content = atob(data.content);
+            datosOriginales = JSON.parse(content);
+            datosEditados = JSON.parse(JSON.stringify(datosOriginales));
+            
+            mostrarTabla();
+            ocultarMensaje();
+        } catch (error) {
+            container.innerHTML = `<div class="message error">❌ Error al cargar datos: ${error.message}</div>`;
+        }
+    }
+
+    // Mostrar tabla de ingredientes
+    function mostrarTabla() {
+        const container = document.getElementById('tablaContainer');
+        
+        let html = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Ingrediente</th>
+                        <th>Precio por kg ($)</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        
+        datosEditados.forEach((item, index) => {
+            html += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${item.nombre}</strong></td>
+                    <td>
+                        <input type="number" id="precio_${index}" value="${item.precioKg}" step="0.01" min="0">
+                    </td>
+                    <td>
+                        <button class="btn-save" onclick="guardarUno(${index})">Guardar</button>
+                    </td>
+                </tr>
+            `;
+        });
+        
+        html += `
+                </tbody>
+            </table>
+            <div style="margin-top: 12px; font-size: 12px; color: #8B7355;">
+                📊 Total: ${datosEditados.length} ingredientes
+            </div>
+        `;
+        
+        container.innerHTML = html;
+    }
+
+    // Guardar un solo ingrediente
+    async function guardarUno(index) {
+        const input = document.getElementById(`precio_${index}`);
+        const nuevoPrecio = parseFloat(input.value);
+        
+        if (isNaN(nuevoPrecio)) {
+            mostrarMensaje('Por favor ingresa un número válido', 'error');
+            return;
+        }
+        
+        datosEditados[index].precioKg = nuevoPrecio;
+        await guardarEnGitHub();
+        mostrarMensaje(`✅ Precio de ${datosEditados[index].nombre} actualizado`, 'success');
+        cargarDatos(); // Recargar para sincronizar
+    }
+
+    // Guardar todos los cambios
+    async function guardarTodos() {
+        for (let i = 0; i < datosEditados.length; i++) {
+            const input = document.getElementById(`precio_${i}`);
+            if (input) {
+                datosEditados[i].precioKg = parseFloat(input.value);
+            }
+        }
+        await guardarEnGitHub();
+        mostrarMensaje('✅ Todos los precios han sido actualizados', 'success');
+        cargarDatos();
+    }
+
+    // Guardar en GitHub
+    async function guardarEnGitHub() {
+        let token = getToken();
+        if (!token) {
+            token = solicitarToken();
+            if (!token) {
+                mostrarMensaje('❌ Se necesita un token para guardar cambios', 'error');
+                return false;
+            }
+        }
+        
+        mostrarMensaje('💾 Guardando cambios...', 'loading');
+        
+        try {
+            // Obtener el archivo actual para tener el SHA
+            const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+            const fileResponse = await fetch(url);
+            const fileData = await fileResponse.json();
+            const sha = fileData.sha;
+            
+            const contenido = JSON.stringify(datosEditados, null, 4);
+            const contenidoBase64 = btoa(unescape(encodeURIComponent(contenido)));
+            
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: `Actualizar precios - ${new Date().toLocaleString()}`,
+                    content: contenidoBase64,
+                    sha: sha,
+                    branch: BRANCH
+                })
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Error al guardar');
+            }
+            
+            ocultarMensaje();
+            return true;
+        } catch (error) {
+            if (error.message.includes('401')) {
+                localStorage.removeItem('github_token');
+                mostrarMensaje('❌ Token inválido. Por favor ingresa uno nuevo', 'error');
+                guardarEnGitHub(); // Reintentar con nuevo token
+            } else {
+                mostrarMensaje(`❌ Error: ${error.message}`, 'error');
+            }
+            return false;
+        }
+    }
+
+    // Resetear cambios (volver a los originales)
+    function resetearCambios() {
+        if (confirm('¿Estás seguro? Se perderán todos los cambios no guardados.')) {
+            datosEditados = JSON.parse(JSON.stringify(datosOriginales));
+            mostrarTabla();
+            mostrarMensaje('🔄 Cambios reseteados a la versión guardada', 'success');
+            setTimeout(() => ocultarMensaje(), 3000);
+        }
+    }
+
+    function mostrarMensaje(texto, tipo) {
+        const msg = document.getElementById('mensaje');
+        msg.textContent = texto;
+        msg.className = `message ${tipo}`;
+        msg.style.display = 'block';
+        
+        if (tipo !== 'loading') {
+            setTimeout(() => {
+                if (msg.className === `message ${tipo}`) {
+                    msg.style.display = 'none';
+                }
+            }, 4000);
+        }
+    }
+
+    function ocultarMensaje() {
+        const msg = document.getElementById('mensaje');
+        msg.style.display = 'none';
+    }
+
+    // Inicializar
+    cargarDatos();
+</script>
+</body>
+</html>
