@@ -1,7 +1,7 @@
 [
     { "nombre": "Harina", "precioKg": 1.26 },
     { "nombre": "Jugo de Naranja", "precioKg": 2.00 },
-    { "nombre": "Azúcar", "precioKg": 1.60 },
+    { "nombre": "Azucar", "precioKg": 1.60 },
     { "nombre": "Polvo de Hornear", "precioKg": 16.20 },
     { "nombre": "Aceite", "precioKg": 4.58 },
     { "nombre": "Sal", "precioKg": 0.40 },
@@ -13,5 +13,5 @@
     { "nombre": "Bicarbonato", "precioKg": 11.00 },
     { "nombre": "Anis Dulce", "precioKg": 13.80 },
     { "nombre": "Canela", "precioKg": 22.80 },
-    { "nombre": "Papelón", "precioKg": 1.80 }
+    { "nombre": "Papelon", "precioKg": 1.80 }
 ]
