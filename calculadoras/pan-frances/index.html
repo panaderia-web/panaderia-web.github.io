@@ -1,1 +1,64 @@
-
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Pan Francés | Gestión de Producción</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/estilo-comun.css">
+    <script>
+        window.datosProducto = {
+            nombre: "Pan Francés",
+            harinaPorUnidad: 49.0,
+            items: [
+                { nombre: "Harina", pct: 100.0, precioKg: 0 },
+                { nombre: "Agua", pct: 54.5, precioKg: 0 },
+                { nombre: "Levadura", pct: 1.7, precioKg: 0 },
+                { nombre: "Sal", pct: 2.0, precioKg: 0 },
+                { nombre: "Azúcar", pct: 8.0, precioKg: 0 },
+                { nombre: "Margarina", pct: 8.0, precioKg: 0 },
+                { nombre: "Vainilla", pct: 0.8, precioKg: 0 }
+            ]
+        };
+    </script>
+</head>
+<body>
+<div class="product-card">
+    <div class="product-header">
+        <a href="/" class="back-button"><i class="fas fa-arrow-left"></i></a>
+        <h1>PAN FRANCÉS</h1>
+        <p>Fernando Araujo</p>
+    </div>
+    <div class="summary-panel">
+        <div class="stats-grid">
+            <div class="stat-card full-width">
+                <div class="stat-label">Cantidad</div>
+                <div class="quantity-control">
+                    <input type="number" id="inputPanes" class="qty-input" value="1" min="1" step="1">
+                    <span class="unit-text">unidades</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Costo insumos</div>
+                <div class="stat-value cost" id="resCosto">$ 0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Masa total</div>
+                <div class="stat-value" id="resMasa">0 g</div>
+            </div>
+        </div>
+    </div>
+    <div class="ingredients-list">
+        <div class="section-title"><i class="fas fa-flour"></i> Ingredientes</div>
+        <div id="listaIngredientes"></div>
+    </div>
+    <div class="action-button">
+        <button class="btn-copy" onclick="copiarAlPortapapeles()"><i class="fas fa-copy"></i> Copiar lista</button>
+        <div id="copyMessage" class="copy-message"><i class="fas fa-check-circle"></i> ¡Lista copiada!</div>
+    </div>
+    <div class="footer-brand"><span>Gestión profesional de panadería</span></div>
+</div>
+<script src="/assets/js/funciones-comunes.js"></script>
+</body>
+</html>
