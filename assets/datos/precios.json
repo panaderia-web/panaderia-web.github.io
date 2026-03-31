@@ -1,15 +1,17 @@
 [
     { "nombre": "Harina", "precioKg": 1.26 },
+    { "nombre": "Jugo de Naranja", "precioKg": 2.00 },
+    { "nombre": "Azúcar", "precioKg": 1.60 },
+    { "nombre": "Polvo de Hornear", "precioKg": 16.20 },
+    { "nombre": "Aceite", "precioKg": 4.58 },
+    { "nombre": "Sal", "precioKg": 0.40 },
+    { "nombre": "Huevos", "precioKg": 6.70 },
+    { "nombre": "Vainilla", "precioKg": 2.00 },
     { "nombre": "Agua", "precioKg": 0.10 },
     { "nombre": "Levadura", "precioKg": 12.50 },
-    { "nombre": "Sal", "precioKg": 0.45 },
-    { "nombre": "Azúcar", "precioKg": 1.58 },
     { "nombre": "Margarina", "precioKg": 5.20 },
-    { "nombre": "Vainilla", "precioKg": 2.20 },
-    { "nombre": "Huevos", "precioKg": 3.20 },
-    { "nombre": "Panela", "precioKg": 2.50 },
-    { "nombre": "Canela", "precioKg": 8.00 },
-    { "nombre": "Polvo de hornear", "precioKg": 15.80 },
-    { "nombre": "Aceite", "precioKg": 4.50 },
-    { "nombre": "Jugo de Naranja", "precioKg": 2.00 }
+    { "nombre": "Bicarbonato", "precioKg": 11.00 },
+    { "nombre": "Anis Dulce", "precioKg": 13.80 },
+    { "nombre": "Canela", "precioKg": 22.80 },
+    { "nombre": "Papelón", "precioKg": 1.80 }
 ]
