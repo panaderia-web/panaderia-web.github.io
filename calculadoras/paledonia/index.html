@@ -8,24 +8,87 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/estilo-comun.css">
     <style>
-        .shape-tabs { display: flex; gap: 12px; padding: 12px 16px 0; background: var(--bg-cream); }
-        .tab-btn { flex: 1; padding: 8px 12px; border: 1.5px solid var(--border-stone); background: var(--bg-card); border-radius: 40px; font-size: 0.7rem; font-weight: 600; cursor: pointer; text-transform: uppercase; color: var(--text-muted); transition: all 0.2s ease; }
-        .tab-btn.active { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); color: white; border-color: var(--color-primary); }
-        .dimensions-panel { padding: 12px 16px; background: var(--bg-cream); border-bottom: 1px solid var(--border-stone); }
-        .inputs-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .inputs-container.two-cols { grid-template-columns: repeat(2, 1fr); }
-        .input-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .input-group label { font-size: 0.6rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .val-input { width: 100%; padding: 8px; border: 1.5px solid var(--border-stone); border-radius: 16px; text-align: center; font-weight: 600; background: var(--bg-card); color: var(--text-dark); font-size: 0.85rem; outline: none; }
-        .val-input:focus { border-color: var(--color-primary); }
-        @media (max-width: 480px) { .inputs-container { gap: 6px; } .val-input { padding: 6px; font-size: 0.75rem; } }
+        .shape-tabs {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px 0;
+            background: var(--bg-cream);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1.5px solid var(--border-stone);
+            background: var(--bg-card);
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+            color: white;
+            border-color: var(--color-primary);
+        }
+        .dimensions-panel {
+            padding: 12px 16px;
+            background: var(--bg-cream);
+            border-bottom: 1px solid var(--border-stone);
+        }
+        .inputs-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .inputs-container.two-cols {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .input-group label {
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .val-input {
+            width: 100%;
+            padding: 8px;
+            border: 1.5px solid var(--border-stone);
+            border-radius: 16px;
+            text-align: center;
+            font-weight: 600;
+            background: var(--bg-card);
+            color: var(--text-dark);
+            font-size: 0.85rem;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+        }
+        .val-input:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px rgba(210, 105, 30, 0.1);
+        }
+        @media (max-width: 480px) {
+            .inputs-container { gap: 6px; }
+            .val-input { padding: 6px; font-size: 0.75rem; }
+        }
     </style>
     <script>
+        // Factor de harina: 0.2028 g por cm³ (calculado de la tabla)
         const FACTOR_HARINA = 0.2028;
+        
+        // Datos de la receta
         window.datosProducto = {
             nombre: "Paledonia",
             factorHarina: FACTOR_HARINA,
-            esVolumen: true,
             items: [
                 { nombre: "Harina", pct: 100.0, precioKg: 0 },
                 { nombre: "Agua", pct: 100.0, precioKg: 0 },
@@ -37,6 +100,135 @@
                 { nombre: "Canela", pct: 2.0, precioKg: 0 }
             ]
         };
+        
+        let currentShape = 'rect';
+        
+        function switchTab(shape) {
+            currentShape = shape;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            if (shape === 'rect') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('inputs-rect').style.display = 'block';
+                document.getElementById('inputs-cyl').style.display = 'none';
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('inputs-rect').style.display = 'none';
+                document.getElementById('inputs-cyl').style.display = 'block';
+            }
+            calcularVolumen();
+        }
+        
+        function getVolumen() {
+            if (currentShape === 'rect') {
+                const l = parseFloat(document.getElementById('largo').value) || 0;
+                const p = parseFloat(document.getElementById('profundidad').value) || 0;
+                const h = parseFloat(document.getElementById('alto-rect').value) || 0;
+                return l * p * h;
+            } else {
+                const d = parseFloat(document.getElementById('diametro').value) || 0;
+                const h = parseFloat(document.getElementById('alto-cyl').value) || 0;
+                return Math.PI * Math.pow(d / 2, 2) * h;
+            }
+        }
+        
+        function calcularVolumen() {
+            const volumen = getVolumen();
+            const cantidad = parseFloat(document.getElementById('inputPanes').value) || 1;
+            const harinaBase = volumen * FACTOR_HARINA * cantidad;
+            
+            const contenedor = document.getElementById('listaIngredientes');
+            contenedor.innerHTML = '';
+            
+            let masaTotal = 0;
+            let costoTotal = 0;
+            
+            window.datosProducto.items.forEach(ing => {
+                const gramos = harinaBase * (ing.pct / 100);
+                const divisor = (ing.nombre === "Huevos") ? 1500 : 1000;
+                const costo = (gramos / divisor) * (ing.precioKg || 0);
+                
+                masaTotal += gramos;
+                costoTotal += costo;
+                
+                contenedor.innerHTML += `
+                    <div class="ingredient-item">
+                        <div>
+                            <span class="ingredient-name">${ing.nombre}</span>
+                            <span class="ingredient-percent">(${ing.pct}%)</span>
+                        </div>
+                        <div class="ingredient-details">
+                            <div class="ingredient-quantity">${gramos.toFixed(1)} g</div>
+                            <div class="ingredient-price">$ ${costo.toFixed(2)}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('resMasa').innerText = `${masaTotal.toFixed(0)} g`;
+            document.getElementById('resCosto').innerText = `$ ${costoTotal.toFixed(2)}`;
+        }
+        
+        async function cargarPrecios() {
+            try {
+                const response = await fetch('/assets/datos/precios.json');
+                const data = await response.json();
+                window.datosProducto.items.forEach(ing => {
+                    const nombreBuscar = ing.nombre === "Margarina" ? "margarina" : 
+                                        (ing.nombre === "Polvo de hornear" ? "polvo de hornear" : ing.nombre.toLowerCase());
+                    const encontrado = data.find(p => p.nombre.toLowerCase().trim() === nombreBuscar);
+                    if (encontrado) {
+                        ing.precioKg = encontrado.precioKg;
+                    }
+                });
+                calcularVolumen();
+            } catch (error) {
+                console.error("Error al cargar precios:", error);
+                calcularVolumen();
+            }
+        }
+        
+        function copiarAlPortapapeles() {
+            const cantidad = document.getElementById('inputPanes').value;
+            const masaTotalStr = document.getElementById('resMasa').innerText;
+            const costoTotalStr = document.getElementById('resCosto').innerText;
+            const volumen = getVolumen();
+            const harinaBase = volumen * FACTOR_HARINA * cantidad;
+            
+            let textoCopiar = `PALEDONIA\n`;
+            textoCopiar += `━━━━━━━━━━━━━━━━\n`;
+            textoCopiar += `Forma: ${currentShape === 'rect' ? 'Rectangular' : 'Cilíndrica'}\n`;
+            textoCopiar += `Cantidad: ${cantidad} unidad(es)\n`;
+            textoCopiar += `Costo producción: ${costoTotalStr}\n`;
+            textoCopiar += `Masa total: ${masaTotalStr}\n`;
+            textoCopiar += `━━━━━━━━━━━━━━━━\n`;
+            textoCopiar += `LISTA DE INSUMOS:\n\n`;
+            
+            window.datosProducto.items.forEach(ing => {
+                const gramos = harinaBase * (ing.pct / 100);
+                textoCopiar += `${ing.nombre}: ${gramos.toFixed(1)} g\n`;
+            });
+            
+            textoCopiar += `\n━━━━━━━━━━━━━━━━\n`;
+            textoCopiar += `Fernando Araujo`;
+            
+            navigator.clipboard.writeText(textoCopiar).then(() => {
+                const messageEl = document.getElementById('copyMessage');
+                messageEl.style.display = 'block';
+                setTimeout(() => {
+                    messageEl.style.display = 'none';
+                }, 2000);
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('inputPanes').addEventListener('input', calcularVolumen);
+            document.getElementById('largo').addEventListener('input', calcularVolumen);
+            document.getElementById('profundidad').addEventListener('input', calcularVolumen);
+            document.getElementById('alto-rect').addEventListener('input', calcularVolumen);
+            document.getElementById('diametro').addEventListener('input', calcularVolumen);
+            document.getElementById('alto-cyl').addEventListener('input', calcularVolumen);
+            cargarPrecios();
+        });
     </script>
 </head>
 <body>
@@ -54,16 +246,31 @@
 
     <div id="inputs-rect" class="dimensions-panel">
         <div class="inputs-container">
-            <div class="input-group"><label>Largo (cm)</label><input type="number" id="largo" class="val-input" value="22" step="0.5" oninput="calcularVolumen()"></div>
-            <div class="input-group"><label>Profundidad (cm)</label><input type="number" id="profundidad" class="val-input" value="29.5" step="0.5" oninput="calcularVolumen()"></div>
-            <div class="input-group"><label>Altura (cm)</label><input type="number" id="alto-rect" class="val-input" value="5" step="0.1" oninput="calcularVolumen()"></div>
+            <div class="input-group">
+                <label>Largo (cm)</label>
+                <input type="number" id="largo" class="val-input" value="22" step="0.5">
+            </div>
+            <div class="input-group">
+                <label>Profundidad (cm)</label>
+                <input type="number" id="profundidad" class="val-input" value="29.5" step="0.5">
+            </div>
+            <div class="input-group">
+                <label>Altura (cm)</label>
+                <input type="number" id="alto-rect" class="val-input" value="5" step="0.1">
+            </div>
         </div>
     </div>
 
     <div id="inputs-cyl" class="dimensions-panel" style="display: none;">
         <div class="inputs-container two-cols">
-            <div class="input-group"><label>Diámetro (cm)</label><input type="number" id="diametro" class="val-input" value="26" step="0.5" oninput="calcularVolumen()"></div>
-            <div class="input-group"><label>Altura (cm)</label><input type="number" id="alto-cyl" class="val-input" value="8" step="0.1" oninput="calcularVolumen()"></div>
+            <div class="input-group">
+                <label>Diámetro (cm)</label>
+                <input type="number" id="diametro" class="val-input" value="26" step="0.5">
+            </div>
+            <div class="input-group">
+                <label>Altura (cm)</label>
+                <input type="number" id="alto-cyl" class="val-input" value="8" step="0.1">
+            </div>
         </div>
     </div>
 
@@ -72,7 +279,7 @@
             <div class="stat-card full-width">
                 <div class="stat-label">Cantidad</div>
                 <div class="quantity-control">
-                    <input type="number" id="inputPanes" class="qty-input" value="1" min="1" step="1" oninput="calcularVolumen()">
+                    <input type="number" id="inputPanes" class="qty-input" value="1" min="1" step="1">
                     <span class="unit-text">unidades</span>
                 </div>
             </div>
@@ -88,35 +295,24 @@
     </div>
 
     <div class="ingredients-list">
-        <div class="section-title"><i class="fas fa-cake-candles"></i> Ingredientes</div>
+        <div class="section-title">
+            <i class="fas fa-cake-candles"></i> Ingredientes
+        </div>
         <div id="listaIngredientes"></div>
     </div>
 
     <div class="action-button">
-        <button class="btn-copy" onclick="copiarAlPortapapeles()"><i class="fas fa-copy"></i> Copiar lista</button>
-        <div id="copyMessage" class="copy-message"><i class="fas fa-check-circle"></i> ¡Lista copiada!</div>
+        <button class="btn-copy" onclick="copiarAlPortapapeles()">
+            <i class="fas fa-copy"></i> Copiar lista
+        </button>
+        <div id="copyMessage" class="copy-message">
+            <i class="fas fa-check-circle"></i> ¡Lista copiada!
+        </div>
     </div>
-    <div class="footer-brand"><span>Gestión profesional de panadería</span></div>
+
+    <div class="footer-brand">
+        <span>Gestión profesional de panadería</span>
+    </div>
 </div>
-
-<script>
-    let currentShape = 'rect';
-    function switchTab(shape) {
-        currentShape = shape;
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        if (shape === 'rect') {
-            document.querySelectorAll('.tab-btn')[0].classList.add('active');
-            document.getElementById('inputs-rect').style.display = 'block';
-            document.getElementById('inputs-cyl').style.display = 'none';
-        } else {
-            document.querySelectorAll('.tab-btn')[1].classList.add('active');
-            document.getElementById('inputs-rect').style.display = 'none';
-            document.getElementById('inputs-cyl').style.display = 'block';
-        }
-        calcularVolumen();
-    }
-
-    function getVolumen() {
-        if (currentShape === 'rect') {
-            const l = parseFloat(document.getElementById('largo').value) || 0;
-            const p = parseFloat(document.getElementById('profundidad').value)
+</body>
+</html>
