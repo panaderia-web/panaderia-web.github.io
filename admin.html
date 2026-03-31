@@ -248,12 +248,10 @@
     let datosOriginales = [];
     let datosEditados = [];
 
-    // Obtener el token desde el almacenamiento local
     function getToken() {
         return localStorage.getItem('github_token');
     }
 
-    // Solicitar token al usuario
     function solicitarToken() {
         const token = prompt(
             "🔐 Se necesita un token de GitHub para guardar cambios.\n\n" +
@@ -272,7 +270,6 @@
         return null;
     }
 
-    // Cargar datos desde GitHub
     async function cargarDatos() {
         const container = document.getElementById('tablaContainer');
         container.innerHTML = '<div class="message loading">Cargando ingredientes...</div>';
@@ -293,7 +290,6 @@
         }
     }
 
-    // Mostrar tabla de ingredientes
     function mostrarTabla() {
         const container = document.getElementById('tablaContainer');
         
@@ -311,10 +307,12 @@
         `;
         
         datosEditados.forEach((item, index) => {
+            // Asegurar que los caracteres especiales se muestren correctamente
+            const nombreLimpio = item.nombre.normalize('NFC');
             html += `
                 <tr>
                     <td>${index + 1}</td>
-                    <td><strong>${item.nombre}</strong></td>
+                    <td><strong>${nombreLimpio}</strong></td>
                     <td>
                         <input type="number" id="precio_${index}" value="${item.precioKg}" step="0.01" min="0">
                     </td>
@@ -336,7 +334,6 @@
         container.innerHTML = html;
     }
 
-    // Guardar un solo ingrediente
     async function guardarUno(index) {
         const input = document.getElementById(`precio_${index}`);
         const nuevoPrecio = parseFloat(input.value);
@@ -349,10 +346,9 @@
         datosEditados[index].precioKg = nuevoPrecio;
         await guardarEnGitHub();
         mostrarMensaje(`✅ Precio de ${datosEditados[index].nombre} actualizado`, 'success');
-        cargarDatos(); // Recargar para sincronizar
+        cargarDatos();
     }
 
-    // Guardar todos los cambios
     async function guardarTodos() {
         for (let i = 0; i < datosEditados.length; i++) {
             const input = document.getElementById(`precio_${i}`);
@@ -365,7 +361,6 @@
         cargarDatos();
     }
 
-    // Guardar en GitHub
     async function guardarEnGitHub() {
         let token = getToken();
         if (!token) {
@@ -379,7 +374,6 @@
         mostrarMensaje('💾 Guardando cambios...', 'loading');
         
         try {
-            // Obtener el archivo actual para tener el SHA
             const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
             const fileResponse = await fetch(url);
             const fileData = await fileResponse.json();
@@ -413,7 +407,7 @@
             if (error.message.includes('401')) {
                 localStorage.removeItem('github_token');
                 mostrarMensaje('❌ Token inválido. Por favor ingresa uno nuevo', 'error');
-                guardarEnGitHub(); // Reintentar con nuevo token
+                guardarEnGitHub();
             } else {
                 mostrarMensaje(`❌ Error: ${error.message}`, 'error');
             }
@@ -421,7 +415,6 @@
         }
     }
 
-    // Resetear cambios (volver a los originales)
     function resetearCambios() {
         if (confirm('¿Estás seguro? Se perderán todos los cambios no guardados.')) {
             datosEditados = JSON.parse(JSON.stringify(datosOriginales));
@@ -451,7 +444,6 @@
         msg.style.display = 'none';
     }
 
-    // Inicializar
     cargarDatos();
 </script>
 </body>
