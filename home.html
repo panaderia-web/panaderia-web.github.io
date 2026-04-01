@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Panadería Artesanal | Inicio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #D2691E;
+            --color-primary-dark: #B85C1A;
+            --color-rustic: #8B4513;
+            --color-rustic-light: #A0522D;
+            --bg-cream: #FCF9F5;
+            --bg-card: #FFFFFF;
+            --text-dark: #2C2418;
+            --text-muted: #8B7355;
+            --border-stone: #EEDDCB;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-cream);
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ========== HEADER ========== */
+        .hero {
+            background: linear-gradient(135deg, var(--color-rustic) 0%, var(--color-rustic-light) 100%);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><path fill="white" d="M20,50 Q35,30 50,50 T80,50"/></svg>') repeat;
+            opacity: 0.1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 16px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 24px;
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: var(--color-primary);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+        }
+
+        .btn-outline {
+            display: inline-block;
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-left: 12px;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        /* ========== SECCIONES ========== */
+        .section {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--color-rustic);
+            margin-bottom: 40px;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--color-primary);
+            margin: 12px auto 0;
+            border-radius: 2px;
+        }
+
+        /* Productos grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.3s;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-stone);
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-primary);
+        }
+
+        .product-card .image-container {
+            height: 180px;
+            overflow: hidden;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .product-card .info {
+            padding: 16px;
+            text-align: center;
+        }
+
+        .product-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        /* Herramientas grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .tool-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            border: 1px solid var(--border-stone);
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .tool-card i {
+            font-size: 2.5rem;
+            color: var(--color-primary);
+            margin-bottom: 16px;
+        }
+
+        .tool-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+
+        .tool-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .tool-card a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Admin lock flotante */
+        .admin-lock {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-card);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid var(--border-stone);
+            z-index: 1000;
+        }
+
+        .admin-lock:hover {
+            transform: scale(1.05);
+            border-color: var(--color-primary);
+        }
+
+        .admin-lock i {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        .footer {
+            background: #2c2418;
+            color: #b48c62;
+            text-align: center;
+            padding: 40px 0 20px;
+            margin-top: 40px;
+        }
+
+        .footer p {
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .section {
+                padding: 40px 0;
+            }
+            .section-title {
+                font-size: 1.5rem;
+            }
+            .btn-outline {
+                display: block;
+                margin: 12px auto 0;
+                width: fit-content;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HERO / BIENVENIDA -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>🍞 Panadería Artesanal</h1>
+        <p>Tradición, calidad y pasión por el pan. Descubre nuestras recetas y herramientas profesionales para panaderos.</p>
+        <div>
+            <a href="#productos" class="btn-primary">Ver productos</a>
+            <a href="/index.html" class="btn-outline">← Volver al menú principal</a>
+        </div>
+    </div>
+</section>
+
+<!-- SOBRE NOSOTROS -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Nuestra historia</h2>
+        <div style="max-width: 800px; margin: 0 auto; text-align: center; color: var(--text-muted);">
+            <p>Desde hace más de 20 años, nos dedicamos a la elaboración artesanal de panes con ingredientes naturales y técnicas tradicionales. Creemos en el pan de calidad, hecho con amor y respeto por la materia prima.</p>
+            <p style="margin-top: 16px;">Nuestro sistema de gestión te permite calcular costos, ajustar recetas y optimizar tu producción de forma sencilla y profesional.</p>
+        </div>
+    </div>
+</section>
+
+<!-- PRODUCTOS (CALCULADORAS) -->
+<section id="productos" class="section" style="background: var(--bg-card);">
+    <div class="container">
+        <h2 class="section-title">Nuestros productos</h2>
+        <div class="products-grid" id="productosGrid">
+            <!-- Los productos se cargarán dinámicamente -->
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="/index.html" style="color: var(--color-primary); text-decoration: none; font-weight: 500;">
+                ← Ver todas las calculadoras en el menú principal
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- HERRAMIENTAS PARA PANADEROS -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Herramientas para panaderos</h2>
+        <div class="tools-grid">
+            <div class="tool-card">
+                <i class="fas fa-calculator"></i>
+                <h3>Calculadora de costos</h3>
+                <p>Accede a nuestras calculadoras profesionales para cada producto.</p>
+                <a href="#productos">Ver productos →</a>
+            </div>
+            <div class="tool-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Tablas de conversión</h3>
+                <p>Porcentajes de panadería, temperaturas y equivalencias.</p>
+                <a href="#">Próximamente →</a>
+            </div>
+            <div class="tool-card">
+                <i class="fas fa-video"></i>
+                <h3>Tutoriales en video</h3>
+                <p>Aprende técnicas de amasado, horneado y fermentación.</p>
+                <a href="#">Próximamente →</a>
+            </div>
+            <div class="tool-card">
+                <i class="fas fa-book-open"></i>
+                <h3>Guía de ingredientes</h3>
+                <p>Conoce las propiedades de cada ingrediente y su uso.</p>
+                <a href="#">Próximamente →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONSEJOS Y NOVEDADES -->
+<section class="section" style="background: var(--bg-card);">
+    <div class="container">
+        <h2 class="section-title">Consejos y novedades</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
+            <div style="background: white; border-radius: 16px; padding: 20px; border: 1px solid var(--border-stone);">
+                <i class="fas fa-lightbulb" style="font-size: 1.8rem; color: var(--color-primary); margin-bottom: 12px; display: inline-block;"></i>
+                <h3 style="margin-bottom: 8px;">Consejo del día</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">La fermentación lenta mejora el sabor y la textura del pan. Prueba con 12-24 horas en nevera.</p>
+            </div>
+            <div style="background: white; border-radius: 16px; padding: 20px; border: 1px solid var(--border-stone);">
+                <i class="fas fa-temperature-high" style="font-size: 1.8rem; color: var(--color-primary); margin-bottom: 12px; display: inline-block;"></i>
+                <h3 style="margin-bottom: 8px;">Temperatura ideal</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Horno: 220-250°C para panes crujientes. Para masas enriquecidas, 180-200°C.</p>
+            </div>
+            <div style="background: white; border-radius: 16px; padding: 20px; border: 1px solid var(--border-stone);">
+                <i class="fas fa-seedling" style="font-size: 1.8rem; color: var(--color-primary); margin-bottom: 12px; display: inline-block;"></i>
+                <h3 style="margin-bottom: 8px;">Ingrediente destacado</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">La masa madre aporta sabor y conserva el pan por más tiempo. ¡Anímate a prepararla!</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <p>🍞 Panadería Artesanal - Sistema de gestión profesional</p>
+        <p style="margin-top: 8px;">Fernando Araujo | Todos los derechos reservados</p>
+        <p style="margin-top: 8px; font-size: 0.7rem;">Herramientas para panaderos | Recetas y costos actualizados</p>
+    </div>
+</footer>
+
+<!-- BOTÓN CANDADO ADMIN (flotante) -->
+<div class="admin-lock" onclick="accederPanel()">
+    <i class="fas fa-lock"></i>
+</div>
+
+<script>
+    // Clave de acceso al panel de administración (misma que usas)
+    const CLAVE_ADMIN = "panaderia2024";
+    
+    function accederPanel() {
+        const clave = prompt("🔐 Ingresa la clave de administrador:");
+        if (clave === CLAVE_ADMIN) {
+            window.location.href = "/admin.html";
+        } else if (clave !== null) {
+            alert("❌ Clave incorrecta. Acceso denegado.");
+        }
+    }
+
+    // Lista de productos (misma que en tu menú original)
+    const productos = [
+        { nombre: "Pan Campesino", url: "/calculadoras/pan-campesino/", img: "/imagenes/pan-campesino.webp" },
+        { nombre: "Pan Francés", url: "/calculadoras/pan-frances/", img: "/imagenes/pan-frances.webp" },
+        { nombre: "Pan Canilla", url: "/calculadoras/pan-canilla/", img: "/imagenes/pan-canilla.jpg" },
+        { nombre: "Pan Hamburguesa", url: "/calculadoras/pan-hamburguesa/", img: "/imagenes/pan-hamburguesa.jpg" },
+        { nombre: "Pan Perro Caliente", url: "/calculadoras/pan-perro-caliente/", img: "/imagenes/pan-perro-caliente.webp" },
+        { nombre: "Pan Andino", url: "/calculadoras/pan-andino/", img: "/imagenes/pan-andino.png" },
+        { nombre: "Pan Piñita", url: "/calculadoras/pan-pinita/", img: "/imagenes/pan-piñita.jpg" },
+        { nombre: "Paledonia", url: "/calculadoras/paledonia/", img: "/imagenes/paledonia.png" },
+        { nombre: "Torta de Naranja", url: "/calculadoras/torta-naranja/", img: "/imagenes/torta-naranja.webp" },
+        { nombre: "Catalinas Negras", url: "/calculadoras/catalinas-negras/", img: "/imagenes/catalinas-negras.webp" }
+    ];
+
+    function cargarProductos() {
+        const grid = document.getElementById('productosGrid');
+        if (!grid) return;
+        
+        grid.innerHTML = productos.map(p => `
+            <a href="${p.url}" class="product-card">
+                <div class="image-container">
+                    <img src="${p.img}" alt="${p.nombre}" loading="lazy" onerror="this.src='/imagenes/placeholder.jpg'">
+                </div>
+                <div class="info">
+                    <h3>${p.nombre}</h3>
+                    <span style="color: var(--color-primary); font-size: 0.85rem;">Ver receta →</span>
+                </div>
+            </a>
+        `).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', cargarProductos);
+</script>
+
+</body>
+</html>
