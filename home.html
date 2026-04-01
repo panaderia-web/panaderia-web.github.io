@@ -27,7 +27,6 @@
             --border-stone: #EEDDCB;
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
             --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
         body {
@@ -43,7 +42,68 @@
             padding: 0 20px;
         }
 
-        /* ========== HEADER ========== */
+        /* Menú de navegación */
+        .navbar {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-stone);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i {
+            color: var(--color-primary);
+            font-size: 1.2rem;
+        }
+
+        .logo span {
+            font-weight: 600;
+            color: var(--color-rustic);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-primary);
+        }
+
+        .nav-admin {
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+
+        .nav-admin:hover {
+            color: var(--color-primary);
+        }
+
+        /* Hero */
         .hero {
             background: linear-gradient(135deg, var(--color-rustic) 0%, var(--color-rustic-light) 100%);
             color: white;
@@ -98,7 +158,6 @@
         .btn-primary:hover {
             background: var(--color-primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
         }
 
         .btn-outline {
@@ -119,7 +178,7 @@
             transform: translateY(-2px);
         }
 
-        /* ========== SECCIONES ========== */
+        /* Secciones */
         .section {
             padding: 60px 0;
         }
@@ -147,7 +206,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 24px;
-            margin-bottom: 40px;
         }
 
         .product-card {
@@ -237,35 +295,6 @@
             font-weight: 600;
         }
 
-        /* Admin lock flotante */
-        .admin-lock {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--bg-card);
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow-md);
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid var(--border-stone);
-            z-index: 1000;
-        }
-
-        .admin-lock:hover {
-            transform: scale(1.05);
-            border-color: var(--color-primary);
-        }
-
-        .admin-lock i {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-        }
-
         /* Footer */
         .footer {
             background: #2c2418;
@@ -292,18 +321,44 @@
             .section-title {
                 font-size: 1.5rem;
             }
+            .nav-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .nav-links {
+                justify-content: center;
+            }
             .btn-outline {
-                display: block;
-                margin: 12px auto 0;
-                width: fit-content;
+                margin-left: 0;
+                margin-top: 12px;
+                display: inline-block;
             }
         }
     </style>
 </head>
 <body>
 
+<!-- MENÚ DE NAVEGACIÓN -->
+<nav class="navbar">
+    <div class="container nav-container">
+        <div class="logo">
+            <i class="fas fa-bread-slice"></i>
+            <span>Panadería Artesanal</span>
+        </div>
+        <div class="nav-links">
+            <a href="#inicio">Inicio</a>
+            <a href="#productos">Productos</a>
+            <a href="#herramientas">Herramientas</a>
+            <a href="#consejos">Consejos</a>
+        </div>
+        <div>
+            <i class="fas fa-lock nav-admin" onclick="accederPanel()"></i>
+        </div>
+    </div>
+</nav>
+
 <!-- HERO / BIENVENIDA -->
-<section class="hero">
+<section id="inicio" class="hero">
     <div class="hero-content">
         <h1>🍞 Panadería Artesanal</h1>
         <p>Tradición, calidad y pasión por el pan. Descubre nuestras recetas y herramientas profesionales para panaderos.</p>
@@ -332,7 +387,7 @@
         <div class="products-grid" id="productosGrid">
             <!-- Los productos se cargarán dinámicamente -->
         </div>
-        <div style="text-align: center; margin-top: 20px;">
+        <div style="text-align: center; margin-top: 30px;">
             <a href="/index.html" style="color: var(--color-primary); text-decoration: none; font-weight: 500;">
                 ← Ver todas las calculadoras en el menú principal
             </a>
@@ -341,7 +396,7 @@
 </section>
 
 <!-- HERRAMIENTAS PARA PANADEROS -->
-<section class="section">
+<section id="herramientas" class="section">
     <div class="container">
         <h2 class="section-title">Herramientas para panaderos</h2>
         <div class="tools-grid">
@@ -374,7 +429,7 @@
 </section>
 
 <!-- CONSEJOS Y NOVEDADES -->
-<section class="section" style="background: var(--bg-card);">
+<section id="consejos" class="section" style="background: var(--bg-card);">
     <div class="container">
         <h2 class="section-title">Consejos y novedades</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
@@ -406,13 +461,8 @@
     </div>
 </footer>
 
-<!-- BOTÓN CANDADO ADMIN (flotante) -->
-<div class="admin-lock" onclick="accederPanel()">
-    <i class="fas fa-lock"></i>
-</div>
-
 <script>
-    // Clave de acceso al panel de administración (misma que usas)
+    // Clave de acceso al panel de administración
     const CLAVE_ADMIN = "panaderia2024";
     
     function accederPanel() {
@@ -424,7 +474,7 @@
         }
     }
 
-    // Lista de productos (misma que en tu menú original)
+    // Lista de productos
     const productos = [
         { nombre: "Pan Campesino", url: "/calculadoras/pan-campesino/", img: "/imagenes/pan-campesino.webp" },
         { nombre: "Pan Francés", url: "/calculadoras/pan-frances/", img: "/imagenes/pan-frances.webp" },
@@ -445,7 +495,7 @@
         grid.innerHTML = productos.map(p => `
             <a href="${p.url}" class="product-card">
                 <div class="image-container">
-                    <img src="${p.img}" alt="${p.nombre}" loading="lazy" onerror="this.src='/imagenes/placeholder.jpg'">
+                    <img src="${p.img}" alt="${p.nombre}" loading="lazy">
                 </div>
                 <div class="info">
                     <h3>${p.nombre}</h3>
