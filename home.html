@@ -60,20 +60,9 @@
             gap: 16px;
         }
 
+        /* Logo vacío - sin texto ni ícono */
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logo i {
-            color: var(--color-primary);
-            font-size: 1.2rem;
-        }
-
-        .logo span {
-            font-weight: 600;
-            color: var(--color-rustic);
+            /* Sin contenido */
         }
 
         .nav-links {
@@ -103,7 +92,7 @@
             color: var(--color-primary);
         }
 
-        /* Hero con imagen de fondo - SIN TÍTULO */
+        /* Hero con imagen de fondo */
         .hero {
             color: white;
             padding: 100px 0;
@@ -319,13 +308,10 @@
 </head>
 <body>
 
-<!-- MENÚ DE NAVEGACIÓN -->
+<!-- MENÚ DE NAVEGACIÓN - SIN TEXTO NI ÍCONO -->
 <nav class="navbar">
     <div class="container nav-container">
-        <div class="logo">
-            <i class="fas fa-bread-slice"></i>
-            <span>Panadería Artesanal</span>
-        </div>
+        <div class="logo"></div>
         <div class="nav-links">
             <a href="#inicio">Inicio</a>
             <a href="#productos">Productos</a>
@@ -338,7 +324,7 @@
     </div>
 </nav>
 
-<!-- HERO / BIENVENIDA CON IMAGEN DE FONDO - SIN TÍTULO NI EMOJI -->
+<!-- HERO / BIENVENIDA CON IMAGEN DE FONDO -->
 <section id="inicio" class="hero" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/imagenes/Encabezado.png') center/cover no-repeat;">
     <div class="hero-content">
         <p>Calculadoras profesionales para panaderos. Optimiza tus costos, ajusta recetas y gestiona tu producción.</p>
