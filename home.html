@@ -103,25 +103,12 @@
             color: var(--color-primary);
         }
 
-        /* Hero */
+        /* Hero con imagen de fondo */
         .hero {
-            background: linear-gradient(135deg, var(--color-rustic) 0%, var(--color-rustic-light) 100%);
             color: white;
-            padding: 80px 0;
+            padding: 100px 0;
             text-align: center;
             position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><path fill="white" d="M20,50 Q35,30 50,50 T80,50"/></svg>') repeat;
-            opacity: 0.1;
         }
 
         .hero-content {
@@ -133,14 +120,15 @@
             font-family: 'Playfair Display', serif;
             font-size: 3rem;
             margin-bottom: 16px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .hero p {
             font-size: 1.2rem;
             max-width: 600px;
             margin: 0 auto 24px;
-            opacity: 0.9;
+            opacity: 0.95;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
 
         .btn-primary {
@@ -315,6 +303,9 @@
             .hero p {
                 font-size: 1rem;
             }
+            .hero {
+                padding: 60px 0;
+            }
             .section {
                 padding: 40px 0;
             }
@@ -357,8 +348,8 @@
     </div>
 </nav>
 
-<!-- HERO / BIENVENIDA -->
-<section id="inicio" class="hero">
+<!-- HERO / BIENVENIDA CON IMAGEN DE FONDO -->
+<section id="inicio" class="hero" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/imagenes/Encabezado.png') center/cover no-repeat;">
     <div class="hero-content">
         <h1>🍞 Panadería Artesanal</h1>
         <p>Tradición, calidad y pasión por el pan. Descubre nuestras recetas y herramientas profesionales para panaderos.</p>
