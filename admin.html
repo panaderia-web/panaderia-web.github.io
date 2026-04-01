@@ -73,13 +73,21 @@
             50% { opacity: 0.5; }
         }
 
-        .btn-refresh {
+        .btn-refresh, .btn-add {
             background: #8B4513;
             color: white;
             border: none;
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
+        }
+
+        .btn-add {
+            background: #4caf50;
+        }
+
+        .btn-add:hover {
+            background: #45a049;
         }
 
         .btn-refresh:hover {
@@ -112,6 +120,10 @@
             font-size: 14px;
         }
 
+        td input.nombre-input {
+            width: 150px;
+        }
+
         td input:focus {
             outline: none;
             border-color: #D2691E;
@@ -125,10 +137,25 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 12px;
+            margin-right: 5px;
+        }
+
+        .btn-delete {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
         }
 
         .btn-save:hover {
             background: #B85C1A;
+        }
+
+        .btn-delete:hover {
+            background: #c53030;
         }
 
         .btn-save-all {
@@ -143,10 +170,6 @@
             margin-right: 12px;
         }
 
-        .btn-save-all:hover {
-            background: #45a049;
-        }
-
         .btn-reset {
             background: #e53e3e;
             color: white;
@@ -155,10 +178,6 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
-        }
-
-        .btn-reset:hover {
-            background: #c53030;
         }
 
         .message {
@@ -195,6 +214,29 @@
             font-size: 12px;
         }
 
+        .add-ingredient-panel {
+            background: #f9f0e4;
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .add-ingredient-panel input {
+            padding: 10px;
+            border: 1px solid #eeddcb;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .add-ingredient-panel input:focus {
+            outline: none;
+            border-color: #D2691E;
+        }
+
         @media (max-width: 768px) {
             th, td {
                 padding: 8px;
@@ -203,6 +245,13 @@
             td input {
                 width: 70px;
                 font-size: 12px;
+            }
+            td input.nombre-input {
+                width: 100px;
+            }
+            .add-ingredient-panel {
+                flex-direction: column;
+                align-items: stretch;
             }
         }
     </style>
@@ -213,14 +262,31 @@
         <span>🍞</span>
         Panel de Administración
     </h1>
-    <div class="subtitle">Gestión de precios de ingredientes</div>
+    <div class="subtitle">Gestión completa de ingredientes y precios</div>
 
     <div class="info-bar">
         <div class="status">
             <div class="status-dot"></div>
             <span>Conectado a GitHub</span>
         </div>
-        <button class="btn-refresh" onclick="cargarDatos()">🔄 Actualizar lista</button>
+        <div>
+            <button class="btn-refresh" onclick="cargarDatos()">🔄 Actualizar lista</button>
+        </div>
+    </div>
+
+    <!-- Panel para agregar nuevo ingrediente -->
+    <div class="add-ingredient-panel">
+        <div style="flex: 2;">
+            <label style="font-size: 12px; color: #8B4513;">Nuevo ingrediente</label>
+            <input type="text" id="nuevoNombre" placeholder="Ej: Mantequilla" style="width: 100%;">
+        </div>
+        <div style="flex: 1;">
+            <label style="font-size: 12px; color: #8B4513;">Precio por kg ($)</label>
+            <input type="number" id="nuevoPrecio" placeholder="0.00" step="0.01" style="width: 100%;">
+        </div>
+        <div>
+            <button class="btn-add" onclick="agregarIngrediente()" style="margin-top: 20px;">➕ Agregar ingrediente</button>
+        </div>
     </div>
 
     <div id="tablaContainer">
@@ -234,12 +300,12 @@
 
     <div id="mensaje" class="message"></div>
     <div class="footer">
-        ⚡ Los cambios se reflejan en tu sitio web en 1-2 minutos
+        ⚡ Los cambios se reflejan en tu sitio web en 1-2 minutos<br>
+        ✏️ Puedes editar nombre, precio, agregar o eliminar ingredientes
     </div>
 </div>
 
 <script>
-    // Configuración de GitHub
     const REPO_OWNER = "panaderia-web";
     const REPO_NAME = "panaderia-web.github.io";
     const FILE_PATH = "assets/datos/precios.json";
@@ -294,30 +360,32 @@
         const container = document.getElementById('tablaContainer');
         
         let html = `
-            <table>
+             <table>
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>Ingrediente</th>
                         <th>Precio por kg ($)</th>
-                        <th>Acción</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
         `;
         
         datosEditados.forEach((item, index) => {
-            // Asegurar que los caracteres especiales se muestren correctamente
             const nombreLimpio = item.nombre.normalize('NFC');
             html += `
-                <tr>
+                <tr id="fila_${index}">
                     <td>${index + 1}</td>
-                    <td><strong>${nombreLimpio}</strong></td>
+                    <td>
+                        <input type="text" id="nombre_${index}" class="nombre-input" value="${nombreLimpio.replace(/"/g, '&quot;')}">
+                    </td>
                     <td>
                         <input type="number" id="precio_${index}" value="${item.precioKg}" step="0.01" min="0">
                     </td>
                     <td>
                         <button class="btn-save" onclick="guardarUno(${index})">Guardar</button>
+                        <button class="btn-delete" onclick="eliminarIngrediente(${index})">Eliminar</button>
                     </td>
                 </tr>
             `;
@@ -334,30 +402,69 @@
         container.innerHTML = html;
     }
 
-    async function guardarUno(index) {
-        const input = document.getElementById(`precio_${index}`);
-        const nuevoPrecio = parseFloat(input.value);
+    function guardarUno(index) {
+        const nombreInput = document.getElementById(`nombre_${index}`);
+        const precioInput = document.getElementById(`precio_${index}`);
         
+        const nuevoNombre = nombreInput.value.trim();
+        const nuevoPrecio = parseFloat(precioInput.value);
+        
+        if (!nuevoNombre) {
+            mostrarMensaje('El nombre no puede estar vacío', 'error');
+            return;
+        }
         if (isNaN(nuevoPrecio)) {
-            mostrarMensaje('Por favor ingresa un número válido', 'error');
+            mostrarMensaje('Por favor ingresa un precio válido', 'error');
             return;
         }
         
+        datosEditados[index].nombre = nuevoNombre;
         datosEditados[index].precioKg = nuevoPrecio;
-        await guardarEnGitHub();
-        mostrarMensaje(`✅ Precio de ${datosEditados[index].nombre} actualizado`, 'success');
-        cargarDatos();
+        
+        mostrarMensaje(`✅ ${nuevoNombre} actualizado`, 'success');
+        mostrarTabla();
+    }
+
+    function eliminarIngrediente(index) {
+        const nombre = datosEditados[index].nombre;
+        if (confirm(`¿Eliminar "${nombre}" permanentemente?`)) {
+            datosEditados.splice(index, 1);
+            mostrarTabla();
+            mostrarMensaje(`✅ "${nombre}" eliminado`, 'success');
+        }
+    }
+
+    function agregarIngrediente() {
+        const nombreInput = document.getElementById('nuevoNombre');
+        const precioInput = document.getElementById('nuevoPrecio');
+        
+        const nuevoNombre = nombreInput.value.trim();
+        const nuevoPrecio = parseFloat(precioInput.value);
+        
+        if (!nuevoNombre) {
+            mostrarMensaje('Ingresa el nombre del nuevo ingrediente', 'error');
+            return;
+        }
+        if (isNaN(nuevoPrecio)) {
+            mostrarMensaje('Ingresa un precio válido', 'error');
+            return;
+        }
+        
+        datosEditados.push({
+            nombre: nuevoNombre,
+            precioKg: nuevoPrecio
+        });
+        
+        nombreInput.value = '';
+        precioInput.value = '';
+        
+        mostrarTabla();
+        mostrarMensaje(`✅ "${nuevoNombre}" agregado correctamente`, 'success');
     }
 
     async function guardarTodos() {
-        for (let i = 0; i < datosEditados.length; i++) {
-            const input = document.getElementById(`precio_${i}`);
-            if (input) {
-                datosEditados[i].precioKg = parseFloat(input.value);
-            }
-        }
         await guardarEnGitHub();
-        mostrarMensaje('✅ Todos los precios han sido actualizados', 'success');
+        mostrarMensaje('✅ Todos los cambios han sido guardados', 'success');
         cargarDatos();
     }
 
@@ -389,7 +496,7 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    message: `Actualizar precios - ${new Date().toLocaleString()}`,
+                    message: `Actualizar ingredientes - ${new Date().toLocaleString()}`,
                     content: contenidoBase64,
                     sha: sha,
                     branch: BRANCH
