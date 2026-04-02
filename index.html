@@ -3,210 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Menú de Panadería | Recetas Artesanales</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Arepas de Harina de Trigo | Gestión de Producción</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #fef7e8 0%, #fcf3e3 100%);
-            min-height: 100vh;
-            padding: 1.5rem 1rem;
-        }
-        .menu-container { max-width: 1400px; width: 100%; margin: 0 auto; }
-        .header { text-align: center; margin-bottom: 2rem; position: relative; }
-        .header h1 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 600; color: #4b2e1a; margin-bottom: 0.5rem; }
-        .header p { font-size: 0.95rem; color: #7a5a44; max-width: 600px; margin: 0 auto; line-height: 1.4; }
-        .header::after { content: ''; display: block; width: 60px; height: 2px; background: linear-gradient(90deg, #e7cfaa, #b68b40); margin: 0.75rem auto 0; border-radius: 2px; }
-        .products-grid { display: grid; gap: 1rem; margin-bottom: 2rem; grid-template-columns: repeat(2, 1fr); }
-        @media (min-width: 768px) { body { padding: 2rem 1.5rem; } .products-grid { gap: 1.5rem; grid-template-columns: repeat(3, 1fr); } .header h1 { font-size: 2.5rem; } .header p { font-size: 1.05rem; } }
-        @media (min-width: 1024px) { .products-grid { gap: 2rem; grid-template-columns: repeat(4, 1fr); } .header h1 { font-size: 2.8rem; } .header p { font-size: 1.15rem; } }
-        .product-card {
-            background: #ffffff; border-radius: 1rem; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: all 0.3s ease; text-decoration: none; display: flex; flex-direction: column;
-            border: 1px solid rgba(230,200,150,0.3);
-        }
-        .product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); border-color: #d4b48c; }
-        .image-container { position: relative; width: 100%; height: 160px; overflow: hidden; background: #f9f0e4; }
-        @media (min-width: 768px) { .image-container { height: 200px; } }
-        @media (min-width: 1024px) { .image-container { height: 220px; } }
-        .product-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-        .product-card:hover .product-image { transform: scale(1.05); }
-        .image-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.3), transparent); height: 50px; opacity: 0; transition: opacity 0.3s; }
-        .product-card:hover .image-overlay { opacity: 1; }
-        .card-content { padding: 0.9rem; background: white; }
-        @media (min-width: 768px) { .card-content { padding: 1.2rem; } }
-        @media (min-width: 1024px) { .card-content { padding: 1.5rem; } }
-        .product-name { font-size: 1rem; font-weight: 600; color: #2c1a0e; text-align: center; }
-        @media (min-width: 768px) { .product-name { font-size: 1.2rem; } }
-        @media (min-width: 1024px) { .product-name { font-size: 1.4rem; } }
-        .card-footer { display: flex; align-items: center; justify-content: center; padding-top: 0.6rem; border-top: 1px solid #f0e5d8; margin-top: 0.4rem; }
-        .view-link { color: #b67b3e; font-weight: 500; font-size: 0.75rem; display: flex; align-items: center; gap: 0.3rem; transition: gap 0.3s; }
-        @media (min-width: 768px) { .view-link { font-size: 0.85rem; gap: 0.4rem; } }
-        .product-card:hover .view-link { gap: 0.5rem; }
-        .view-link i { font-size: 0.7rem; transition: transform 0.3s; }
-        .product-card:hover .view-link i { transform: translateX(3px); }
-        .footer-note { text-align: center; padding: 1.5rem 0 0; font-size: 0.75rem; color: #b48c62; border-top: 1px solid #eedbbc; display: flex; justify-content: center; align-items: center; gap: 1rem; flex-wrap: wrap; }
-        @media (min-width: 768px) { .footer-note { font-size: 0.85rem; gap: 2rem; } }
-        @media (max-width: 480px) { .products-grid { gap: 0.75rem; } .card-content { padding: 0.7rem; } .product-name { font-size: 0.9rem; } .view-link { font-size: 0.7rem; } }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/estilo-comun.css">
+    
+    <script>
+        window.datosProducto = {
+            nombre: "Arepas de Harina de Trigo",
+            harinaPorUnidad: 66.67,  // 1 kg de harina = 15 arepas
+            items: [
+                { nombre: "Harina de trigo", pct: 100.0, precioKg: 0 },
+                { nombre: "Agua", pct: 60.0, precioKg: 0 },
+                { nombre: "Margarina", pct: 7.0, precioKg: 0 },
+                { nombre: "Polvo de hornear", pct: 1.5, precioKg: 0 },
+                { nombre: "Sal", pct: 1.5, precioKg: 0 }
+            ]
+        };
+    </script>
 </head>
 <body>
-<div class="menu-container">
-    <div class="header">
-        <h1>Menú de Panadería</h1>
-        <p>Selecciona cualquier producto y accede a su receta profesional, costos de producción y proceso de elaboración.</p>
+
+<div class="product-card">
+    <div class="product-header">
+        <a href="/" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1>AREPAS DE HARINA DE TRIGO</h1>
+        <p>Fernando Araujo</p>
     </div>
 
-    <div class="products-grid">
-        <!-- Pan Campesino -->
-        <a href="/calculadoras/pan-campesino/" class="product-card">
-            <div class="image-container">
-                <img class="product-image" src="/imagenes/pan-campesino.webp" alt="Pan Campesino">
-                <div class="image-overlay"></div>
+    <div class="summary-panel">
+        <div class="stats-grid">
+            <div class="stat-card full-width">
+                <div class="stat-label">Cantidad</div>
+                <div class="quantity-control">
+                    <input type="number" id="inputPanes" class="qty-input" value="15" min="1" step="5">
+                    <span class="unit-text">unidades</span>
+                </div>
+                <div style="font-size: 0.65rem; color: #8B7355; margin-top: 5px;">
+                    ⚡ 1 kg de harina = 15 arepas
+                </div>
             </div>
-            <div class="card-content">
-                <h3 class="product-name">Pan Campesino</h3>
-                <div class="card-footer"><span class="view-link">Ver receta <i>→</i></span></div>
+            <div class="stat-card">
+                <div class="stat-label">Costo insumos</div>
+                <div class="stat-value cost" id="resCosto">$ 0.00</div>
             </div>
-        </a>
-
-        <!-- Pan Francés -->
-        <a href="/calculadoras/pan-frances/" class="product-card">
-            <div class="image-container">
-                <img class="product-image" src="/imagenes/pan-frances.webp" alt="Pan Francés">
-                <div class="image-overlay"></div>
+            <div class="stat-card">
+                <div class="stat-label">Masa total</div>
+                <div class="stat-value" id="resMasa">0 g</div>
             </div>
-            <div class="card-content">
-                <h3 class="product-name">Pan Francés</h3>
-                <div class="card-footer"><span class="view-link">Ver receta <i>→</i></span></div>
-            </div>
-        </a>
-
-        <!-- Pan Canilla -->
-        <a href="/calculadoras/pan-canilla/" class="product-card">
-            <div class="image-container">
-                <img class="product-image" src="/imagenes/pan-canilla.jpg" alt="Pan Canilla">
-                <div class="image-overlay"></div>
-            </div>
-            <div class="card-content">
-                <h3 class="product-name">Pan Canilla</h3>
-                <div class="card-footer"><span class="view-link">Ver receta <i>→</i></span></div>
-            </div>
-        </a>
-
-        <!-- Pan Hamburguesa -->
-        <a href="/calculadoras/pan-hamburguesa/" class="product-card">
-            <div class="image-container">
-                <img class="product-image" src="/imagenes/pan-hamburguesa.jpg" alt="Pan Hamburguesa">
-                <div class="image-overlay"></div>
-            </div>
-            <div class="card-content">
-                <h3 class="product-name">Pan Hamburguesa</h3>
-                <div class="card-footer"><span class="view-link">Ver receta <i>→</i></span></div>
-            </div>
-        </a>
-
-        <!-- Pan Perro Caliente -->
-        <a href="/calculadoras/pan-perro-caliente/" class="product-card">
-            <div class="image-container">
-                <img class="product-image" src="/imagenes/pan-perro-caliente.webp" alt="Pan Perro Caliente">
-                <div class="image-overlay"></div>
-            </div>
-            <div class="card-content">
-                <h3 class="product-name">Pan Perro Caliente</h3>
-                <div class="card-footer"><span class="view-link">Ver receta <i>→</i></span></div>
-            </div>
-        </a>
-
-        <!-- Pan Andino -->
-        <a href="/calculadoras/pan-andino/" class="product-card">
-            <div class="image-container">
-                <img class="product-image" src="/imagenes/pan-andino.png" alt="Pan Andino">
-                <div class="image-overlay"></div>
-            </div>
-            <div class="card-content">
-                <h3 class="product-name">Pan Andino</h3>
-                <div class="card-footer"><span class="view-link">Ver receta <i>→</i></span></div>
-            </div>
-        </a>
-
-        <!-- Pan Piñita -->
-        <a href="/calculadoras/pan-pinita/" class="product-card">
-            <div class="image-container">
-                <img class="product-image" src="/imagenes/pan-piñita.jpg" alt="Pan Piñita">
-                <div class="image-overlay"></div>
-            </div>
-            <div class="card-content">
-                <h3 class="product-name">Pan Piñita</h3>
-                <div class="card-footer"><span class="view-link">Ver receta <i>→</i></span></div>
-            </div>
-        </a>
-
-        <!-- Paledonia -->
-        <a href="/calculadoras/paledonia/" class="product-card">
-            <div class="image-container">
-                <img class="product-image" src="/imagenes/paledonia.png" alt="Paledonia">
-                <div class="image-overlay"></div>
-            </div>
-            <div class="card-content">
-                <h3 class="product-name">Paledonia</h3>
-                <div class="card-footer"><span class="view-link">Ver receta <i>→</i></span></div>
-            </div>
-        </a>
-
-        <!-- Catalinas Negras -->
-        <a href="/calculadoras/catalinas-negras/" class="product-card">
-            <div class="image-container">
-                <img class="product-image" src="/imagenes/catalinas-negras.webp" alt="Catalinas Negras">
-                <div class="image-overlay"></div>
-            </div>
-            <div class="card-content">
-                <h3 class="product-name">Catalinas Negras</h3>
-                <div class="card-footer"><span class="view-link">Ver receta <i>→</i></span></div>
-            </div>
-        </a>
-
-        <!-- Torta de Naranja -->
-        <a href="/calculadoras/torta-naranja/" class="product-card">
-            <div class="image-container">
-                <img class="product-image" src="/imagenes/torta-naranja.webp" alt="Torta de Naranja">
-                <div class="image-overlay"></div>
-            </div>
-            <div class="card-content">
-                <h3 class="product-name">Torta de Naranja</h3>
-                <div class="card-footer"><span class="view-link">Ver receta <i>→</i></span></div>
-            </div>
-        </a>
-
-        <!-- Arepas de Harina de Trigo (NUEVO) -->
-        <a href="/calculadoras/arepas-trigo/" class="product-card">
-            <div class="image-container">
-                <img class="product-image" src="/imagenes/arepas-trigo.webp" alt="Arepas de Harina de Trigo">
-                <div class="image-overlay"></div>
-            </div>
-            <div class="card-content">
-                <h3 class="product-name">Arepas de Trigo</h3>
-                <div class="card-footer"><span class="view-link">Ver receta <i>→</i></span></div>
-            </div>
-        </a>
-
-        <!-- Enlace al Panel de Administración -->
-        <div style="text-align: center; margin: 20px 0 0;">
-            <a href="/admin.html" style="display: inline-flex; align-items: center; gap: 8px; background: #8B4513; color: white; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-weight: 500;">
-                <i class="fas fa-cog"></i> Panel de Administración
-            </a>
         </div>
     </div>
 
-    <div class="footer-note">
-        <span>📊 Sistema de gestión - Fernando Araujo</span>
-        <span>👨‍🍳 Recetas profesionales</span>
-        <span>✨ Elaboración artesanal</span>
+    <div class="ingredients-list">
+        <div class="section-title">
+            <i class="fas fa-flour"></i> Ingredientes
+        </div>
+        <div id="listaIngredientes"></div>
+    </div>
+
+    <div class="action-button">
+        <button class="btn-copy" onclick="copiarAlPortapapeles()">
+            <i class="fas fa-copy"></i> Copiar lista
+        </button>
+        <div id="copyMessage" class="copy-message">
+            <i class="fas fa-check-circle"></i> ¡Lista copiada!
+        </div>
+    </div>
+
+    <div class="footer-brand">
+        <span>Gestión profesional de panadería</span>
     </div>
 </div>
+
+<script src="/assets/js/funciones-comunes.js"></script>
 </body>
 </html>
