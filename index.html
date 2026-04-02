@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Arepas de Harina de Trigo | Gestión de Producción</title>
+    <title>Arepas de Maíz | Gestión de Producción</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/estilo-comun.css">
     
     <script>
         window.datosProducto = {
-            nombre: "Arepas de Harina de Trigo",
-            harinaPorUnidad: 66.67,  // 1 kg de harina = 15 arepas
+            nombre: "Arepas de Maíz",
+            harinaPorUnidad: 41.67,  // 1 kg de harina = 24 arepas (1000g ÷ 24 = 41.67g)
             items: [
-                { nombre: "Harina de trigo", pct: 100.0, precioKg: 0 },
-                { nombre: "Agua", pct: 60.0, precioKg: 0 },
-                { nombre: "Margarina", pct: 7.0, precioKg: 0 },
-                { nombre: "Polvo de hornear", pct: 1.5, precioKg: 0 },
+                { nombre: "Harina de maíz", pct: 100.0, precioKg: 0 },
+                { nombre: "Agua", pct: 180.0, precioKg: 0 },
                 { nombre: "Sal", pct: 1.5, precioKg: 0 }
             ]
         };
@@ -29,7 +27,7 @@
         <a href="/" class="back-button">
             <i class="fas fa-arrow-left"></i>
         </a>
-        <h1>AREPAS DE HARINA DE TRIGO</h1>
+        <h1>AREPAS DE MAÍZ</h1>
         <p>Fernando Araujo</p>
     </div>
 
@@ -38,11 +36,11 @@
             <div class="stat-card full-width">
                 <div class="stat-label">Cantidad</div>
                 <div class="quantity-control">
-                    <input type="number" id="inputPanes" class="qty-input" value="15" min="1" step="5">
+                    <input type="number" id="inputPanes" class="qty-input" value="24" min="1" step="12">
                     <span class="unit-text">unidades</span>
                 </div>
                 <div style="font-size: 0.65rem; color: #8B7355; margin-top: 5px;">
-                    ⚡ 1 kg de harina = 15 arepas
+                    ⚡ 1 kg de harina = 24 arepas | Producción sugerida: 24 unidades
                 </div>
             </div>
             <div class="stat-card">
