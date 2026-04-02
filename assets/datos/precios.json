@@ -58,5 +58,9 @@
     {
         "nombre": "Papelon",
         "precioKg": 1.8
+    },
+    {
+        "nombre": "Harina de maíz",
+        "precioKg": 1.4
     }
 ]
