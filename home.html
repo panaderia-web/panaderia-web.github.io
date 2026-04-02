@@ -53,16 +53,11 @@
 
         .nav-container {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             padding: 12px 20px;
             flex-wrap: wrap;
             gap: 16px;
-        }
-
-        /* Logo vacío - sin texto ni ícono */
-        .logo {
-            /* Sin contenido */
         }
 
         .nav-links {
@@ -79,16 +74,6 @@
         }
 
         .nav-links a:hover {
-            color: var(--color-primary);
-        }
-
-        .nav-admin {
-            cursor: pointer;
-            color: var(--text-muted);
-            transition: color 0.2s;
-        }
-
-        .nav-admin:hover {
             color: var(--color-primary);
         }
 
@@ -308,18 +293,14 @@
 </head>
 <body>
 
-<!-- MENÚ DE NAVEGACIÓN - SIN TEXTO NI ÍCONO -->
+<!-- MENÚ DE NAVEGACIÓN - SIN ADMIN -->
 <nav class="navbar">
     <div class="container nav-container">
-        <div class="logo"></div>
         <div class="nav-links">
             <a href="#inicio">Inicio</a>
             <a href="#productos">Productos</a>
             <a href="#herramientas">Herramientas</a>
             <a href="#consejos">Consejos</a>
-        </div>
-        <div>
-            <i class="fas fa-lock nav-admin" onclick="accederPanel()"></i>
         </div>
     </div>
 </nav>
@@ -428,19 +409,7 @@
 </footer>
 
 <script>
-    // Clave de acceso al panel de administración
-    const CLAVE_ADMIN = "panaderia2024";
-    
-    function accederPanel() {
-        const clave = prompt("🔐 Ingresa la clave de administrador:");
-        if (clave === CLAVE_ADMIN) {
-            window.location.href = "/admin.html";
-        } else if (clave !== null) {
-            alert("❌ Clave incorrecta. Acceso denegado.");
-        }
-    }
-
-    // Lista de productos
+    // Lista de productos (Arepas de Trigo agregada al final)
     const productos = [
         { nombre: "Pan Campesino", url: "/calculadoras/pan-campesino/", img: "/imagenes/pan-campesino.webp" },
         { nombre: "Pan Francés", url: "/calculadoras/pan-frances/", img: "/imagenes/pan-frances.webp" },
@@ -451,7 +420,8 @@
         { nombre: "Pan Piñita", url: "/calculadoras/pan-pinita/", img: "/imagenes/pan-piñita.jpg" },
         { nombre: "Paledonia", url: "/calculadoras/paledonia/", img: "/imagenes/paledonia.png" },
         { nombre: "Torta de Naranja", url: "/calculadoras/torta-naranja/", img: "/imagenes/torta-naranja.webp" },
-        { nombre: "Catalinas Negras", url: "/calculadoras/catalinas-negras/", img: "/imagenes/catalinas-negras.webp" }
+        { nombre: "Catalinas Negras", url: "/calculadoras/catalinas-negras/", img: "/imagenes/catalinas-negras.webp" },
+        { nombre: "Arepas de Trigo", url: "/calculadoras/arepas-trigo/", img: "/imagenes/arepas-trigo.webp" }
     ];
 
     function cargarProductos() {
