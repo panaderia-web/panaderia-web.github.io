@@ -293,10 +293,12 @@
 </head>
 <body>
 
-<!-- Enlace discreto al menú principal (esquina superior derecha) -->
-<div style="position: fixed; top: 10px; right: 10px; z-index: 1001;">
-    <a href="/index.html" style="color: #b48c62; text-decoration: none; font-size: 0.7rem; opacity: 0.35;">
-        ⚡
+<!-- Enlace al menú principal (estilo calculadora) -->
+<div style="position: fixed; top: 15px; right: 15px; z-index: 1001;">
+    <a href="/index.html" style="display: inline-flex; align-items: center; gap: 6px; background: #8B4513; color: white; padding: 6px 12px; border-radius: 30px; text-decoration: none; font-weight: 500; font-size: 0.7rem; opacity: 0.6; transition: opacity 0.2s;" 
+       onmouseover="this.style.opacity='1'" 
+       onmouseout="this.style.opacity='0.6'">
+        <i class="fas fa-calculator"></i> Calculadoras
     </a>
 </div>
 
