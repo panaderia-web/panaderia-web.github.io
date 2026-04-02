@@ -11,7 +11,7 @@
     <script>
         window.datosProducto = {
             nombre: "Arepas de Harina de Trigo",
-            harinaPorUnidad: 100.0,  // gramos de harina por cada arepa
+            harinaPorUnidad: 66.67,  // 1 kg de harina = 15 arepas (1000g ÷ 15 = 66.67g)
             items: [
                 { nombre: "Harina de trigo", pct: 100.0, precioKg: 0 },
                 { nombre: "Agua", pct: 60.0, precioKg: 0 },
@@ -38,11 +38,11 @@
             <div class="stat-card full-width">
                 <div class="stat-label">Cantidad</div>
                 <div class="quantity-control">
-                    <input type="number" id="inputPanes" class="qty-input" value="10" min="1" step="5">
+                    <input type="number" id="inputPanes" class="qty-input" value="15" min="1" step="5">
                     <span class="unit-text">unidades</span>
                 </div>
                 <div style="font-size: 0.65rem; color: #8B7355; margin-top: 5px;">
-                    ⚡ Producción sugerida: lotes de 10 unidades
+                    ⚡ 1 kg de harina = 15 arepas | Producción sugerida: 15 unidades
                 </div>
             </div>
             <div class="stat-card">
