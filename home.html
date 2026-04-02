@@ -293,6 +293,13 @@
 </head>
 <body>
 
+<!-- Enlace discreto al menú principal (esquina superior derecha) -->
+<div style="position: fixed; top: 10px; right: 10px; z-index: 1001;">
+    <a href="/index.html" style="color: #b48c62; text-decoration: none; font-size: 0.7rem; opacity: 0.35;">
+        ⚡
+    </a>
+</div>
+
 <!-- MENÚ DE NAVEGACIÓN - SIN ADMIN -->
 <nav class="navbar">
     <div class="container nav-container">
@@ -409,7 +416,7 @@
 </footer>
 
 <script>
-    // Lista de productos (Arepas de Trigo agregada al final)
+    // Lista de productos
     const productos = [
         { nombre: "Pan Campesino", url: "/calculadoras/pan-campesino/", img: "/imagenes/pan-campesino.webp" },
         { nombre: "Pan Francés", url: "/calculadoras/pan-frances/", img: "/imagenes/pan-frances.webp" },
