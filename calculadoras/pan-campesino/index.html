@@ -8,6 +8,35 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/estilo-comun.css">
     
+    <!-- Estilos específicos para el estado del botón -->
+    <style>
+        .wakelock-status {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            z-index: 1000;
+            font-family: monospace;
+            display: none;
+        }
+        .wakelock-status.show {
+            display: block;
+        }
+        .wakelock-status.active {
+            background: #4caf50;
+        }
+        .wakelock-status.error {
+            background: #e53e3e;
+        }
+        .btn-wakelock-active {
+            background: #4caf50 !important;
+        }
+    </style>
+    
     <script>
         window.datosProducto = {
             nombre: "Pan Campesino",
@@ -33,6 +62,11 @@
         </a>
         <h1>PAN CAMPESINO</h1>
         <p>Fernando Araujo</p>
+        
+        <!-- Botón discreto para mantener pantalla activa -->
+        <button id="wakelockBtn" onclick="toggleWakeLock()" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); backdrop-filter: blur(6px); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(252, 249, 245, 0.3); cursor: pointer; transition: all 0.2s ease;">
+            <i class="fas fa-mobile-alt" style="color: white; font-size: 0.85rem;"></i>
+        </button>
     </div>
 
     <div class="summary-panel">
@@ -62,7 +96,6 @@
         <div id="listaIngredientes"></div>
     </div>
 
-    <!-- Botón Copiar lista -->
     <div class="action-button">
         <button class="btn-copy" onclick="copiarAlPortapapeles()">
             <i class="fas fa-copy"></i> Copiar lista
@@ -72,18 +105,13 @@
         </div>
     </div>
 
-    <!-- Botón Mantener pantalla activa -->
-    <div class="action-button">
-        <button class="btn-wakelock" id="wakelockBtn" onclick="toggleWakeLock()">
-            <i class="fas fa-mobile-alt"></i> 🔒 Mantener pantalla activa
-        </button>
-        <div id="wakelockStatus" class="wakelock-status">⚡ La pantalla se apagará según tu configuración</div>
-    </div>
-
     <div class="footer-brand">
         <span>Gestión profesional de panadería</span>
     </div>
 </div>
+
+<!-- Mensaje de estado flotante -->
+<div id="wakelockStatus" class="wakelock-status"></div>
 
 <script src="/assets/js/funciones-comunes.js"></script>
 
@@ -97,24 +125,33 @@
         const statusDiv = document.getElementById('wakelockStatus');
         
         if (wakeLockActivo) {
+            // Desactivar Wake Lock
             if (wakeLock) {
                 await wakeLock.release();
                 wakeLock = null;
             }
             wakeLockActivo = false;
-            btn.innerHTML = '<i class="fas fa-mobile-alt"></i> 🔒 Mantener pantalla activa';
-            btn.style.background = "linear-gradient(135deg, #D2691E, #B85C1A)";
-            statusDiv.innerHTML = '⚡ Pantalla: modo normal (se puede apagar)';
-            statusDiv.className = 'wakelock-status';
+            btn.style.background = "rgba(255,255,255,0.2)";
+            btn.classList.remove('btn-wakelock-active');
+            statusDiv.textContent = '⚡ Pantalla normal';
+            statusDiv.className = 'wakelock-status show';
+            setTimeout(() => {
+                statusDiv.className = 'wakelock-status';
+            }, 2000);
         } else {
+            // Activar Wake Lock
             try {
                 wakeLock = await navigator.wakeLock.request('screen');
                 wakeLockActivo = true;
-                btn.innerHTML = '<i class="fas fa-mobile-alt"></i> 🔓 Pantalla activa (ON)';
                 btn.style.background = "#4caf50";
-                statusDiv.innerHTML = '🔋 Pantalla activa - No se apagará automáticamente';
-                statusDiv.className = 'wakelock-status active';
+                btn.classList.add('btn-wakelock-active');
+                statusDiv.textContent = '🔋 Pantalla activa (no se apagará)';
+                statusDiv.className = 'wakelock-status show active';
+                setTimeout(() => {
+                    statusDiv.className = 'wakelock-status';
+                }, 3000);
                 
+                // Volver a solicitar Wake Lock si la pantalla se reactiva
                 document.addEventListener('visibilitychange', async () => {
                     if (wakeLockActivo && document.visibilityState === 'visible') {
                         try {
@@ -123,8 +160,11 @@
                     }
                 });
             } catch (err) {
-                statusDiv.innerHTML = '❌ Error: ' + err.message;
-                statusDiv.className = 'wakelock-status error';
+                statusDiv.textContent = '❌ Error: ' + err.message;
+                statusDiv.className = 'wakelock-status show error';
+                setTimeout(() => {
+                    statusDiv.className = 'wakelock-status';
+                }, 3000);
             }
         }
     }
