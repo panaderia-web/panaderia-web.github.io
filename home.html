@@ -245,6 +245,68 @@
             font-weight: 600;
         }
 
+        /* Estilos para el cronómetro */
+        .cronometro-input {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-stone);
+            border-radius: 12px;
+            padding: 10px;
+            font-weight: 600;
+            color: var(--text-dark);
+            outline: none;
+            text-align: center;
+            width: 80px;
+            font-size: 1rem;
+        }
+        .cronometro-input:focus {
+            border-color: var(--color-primary);
+        }
+        .cronometro-display {
+            font-family: monospace;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--color-primary);
+            margin: 10px 0;
+        }
+        .cronometro-boton {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .cronometro-boton-start {
+            background: var(--color-primary);
+            color: white;
+        }
+        .cronometro-boton-start:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-1px);
+        }
+        .cronometro-boton-stop {
+            background: #e53e3e;
+            color: white;
+        }
+        .cronometro-boton-stop:hover {
+            background: #c53030;
+            transform: translateY(-1px);
+        }
+        .cronometro-boton-reset {
+            background: #718096;
+            color: white;
+        }
+        .cronometro-boton-reset:hover {
+            background: #4a5568;
+            transform: translateY(-1px);
+        }
+        .cronometro-estado {
+            margin-top: 10px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
         .footer {
             background: #2c2418;
             color: #b48c62;
@@ -380,6 +442,27 @@
                 <p>Conoce las propiedades de cada ingrediente y su uso.</p>
                 <a href="#">Próximamente →</a>
             </div>
+
+            <!-- CRONÓMETRO DE HORNEADO -->
+            <div class="tool-card">
+                <i class="fas fa-stopwatch"></i>
+                <h3>Cronómetro de horneado</h3>
+                <p>Controla el tiempo de horneado con alarmas para voltear y retirar.</p>
+                
+                <div style="margin-top: 15px;">
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;">
+                        <input type="number" id="cronMinutos" class="cronometro-input" value="25" min="1" max="120" step="1">
+                        <span style="line-height: 35px;">minutos</span>
+                    </div>
+                    <div id="cronDisplay" class="cronometro-display">00:00</div>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button id="cronStart" class="cronometro-boton cronometro-boton-start">▶ Iniciar</button>
+                        <button id="cronStop" class="cronometro-boton cronometro-boton-stop">⏹ Detener</button>
+                        <button id="cronReset" class="cronometro-boton cronometro-boton-reset">⟳ Reiniciar</button>
+                    </div>
+                    <div id="cronEstado" class="cronometro-estado">⏳ Esperando inicio</div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -418,6 +501,7 @@
 </footer>
 
 <script>
+    // Lista de productos
     const productos = [
         { nombre: "Pan Campesino", url: "/calculadoras/pan-campesino/", img: "/imagenes/pan-campesino.webp" },
         { nombre: "Pan Francés", url: "/calculadoras/pan-frances/", img: "/imagenes/pan-frances.webp" },
@@ -450,6 +534,200 @@
     }
 
     document.addEventListener('DOMContentLoaded', cargarProductos);
+</script>
+
+<!-- ========== CRONÓMETRO CON DOS ALARMAS ========== -->
+<script>
+    let cronTiempoTotal = 0;
+    let cronTiempoRestante = 0;
+    let cronActivo = false;
+    let cronIntervalo = null;
+    let cronVolteoActivado = false;
+    let contextoAudioCron = null;
+
+    // Elementos del DOM
+    const cronInput = document.getElementById('cronMinutos');
+    const cronDisplay = document.getElementById('cronDisplay');
+    const cronEstado = document.getElementById('cronEstado');
+    const cronStartBtn = document.getElementById('cronStart');
+    const cronStopBtn = document.getElementById('cronStop');
+    const cronResetBtn = document.getElementById('cronReset');
+
+    function cronActualizarDisplay() {
+        const minutos = Math.floor(cronTiempoRestante / 60);
+        const segundos = cronTiempoRestante % 60;
+        cronDisplay.textContent = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+    }
+
+    function cronReproducirAlarma(tipo) {
+        // Detener cualquier alarma anterior
+        if (contextoAudioCron) {
+            try {
+                contextoAudioCron.close();
+            } catch(e) {}
+            contextoAudioCron = null;
+        }
+        
+        try {
+            contextoAudioCron = new (window.AudioContext || window.webkitAudioContext)();
+            const inicio = contextoAudioCron.currentTime;
+            
+            const crearOscilador = (frecuencia, inicioOffset, duracion, volumen = 0.45) => {
+                const osc = contextoAudioCron.createOscillator();
+                const gain = contextoAudioCron.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.value = frecuencia;
+                osc.connect(gain);
+                gain.connect(contextoAudioCron.destination);
+                gain.gain.value = 0;
+                const tiempoInicio = inicio + inicioOffset;
+                gain.gain.setValueAtTime(0, tiempoInicio);
+                gain.gain.linearRampToValueAtTime(volumen, tiempoInicio + 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.00001, tiempoInicio + duracion);
+                osc.start(tiempoInicio);
+                osc.stop(tiempoInicio + duracion);
+                return osc;
+            };
+            
+            if (tipo === 'volteo') {
+                // Alarma para voltear - 10 segundos
+                crearOscilador(660, 0, 1.5, 0.45);
+                crearOscilador(880, 1.8, 1.5, 0.45);
+                crearOscilador(660, 3.6, 1.5, 0.45);
+                crearOscilador(880, 5.4, 1.5, 0.45);
+                crearOscilador(660, 7.2, 1.5, 0.45);
+                crearOscilador(880, 9.0, 1.0, 0.5);
+                
+                if ('vibrate' in navigator) {
+                    navigator.vibrate([500, 200, 500, 200, 500, 200, 500, 200, 500]);
+                }
+                
+                // Notificación
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification('🔄 ¡Voltear las latas!', {
+                        body: 'Ha pasado la mitad del tiempo de horneado',
+                        vibrate: [500, 200, 500]
+                    });
+                }
+            } else {
+                // Alarma final - 10 segundos (más intensa)
+                crearOscilador(880, 0, 1.5, 0.5);
+                crearOscilador(660, 1.8, 1.5, 0.5);
+                crearOscilador(880, 3.6, 1.5, 0.5);
+                crearOscilador(660, 5.4, 1.5, 0.5);
+                crearOscilador(880, 7.2, 1.5, 0.5);
+                crearOscilador(440, 9.0, 1.0, 0.5);
+                
+                if ('vibrate' in navigator) {
+                    navigator.vibrate([600, 200, 600, 200, 600, 200, 600, 200, 600]);
+                }
+                
+                // Notificación
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification('🍞 ¡Pan listo!', {
+                        body: 'El tiempo de horneado ha terminado',
+                        vibrate: [600, 200, 600]
+                    });
+                }
+            }
+            
+            // Cerrar contexto después de la alarma
+            setTimeout(() => {
+                if (contextoAudioCron) {
+                    try {
+                        contextoAudioCron.close();
+                    } catch(e) {}
+                    contextoAudioCron = null;
+                }
+            }, 10500);
+            
+        } catch(e) {
+            console.log('Alarma no disponible:', e);
+        }
+    }
+
+    function cronIniciar() {
+        if (cronActivo) {
+            cronDetener();
+        }
+        
+        const minutos = parseInt(cronInput.value) || 0;
+        if (minutos <= 0) {
+            cronEstado.textContent = '⚠️ Ingresa un tiempo válido';
+            return;
+        }
+        
+        // Solicitar permiso de notificaciones si es necesario
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+        
+        cronTiempoTotal = minutos * 60;
+        cronTiempoRestante = cronTiempoTotal;
+        cronVolteoActivado = false;
+        cronActivo = true;
+        cronActualizarDisplay();
+        cronEstado.textContent = '🔥 Horneando...';
+        cronEstado.style.color = '#D2691E';
+        
+        cronIntervalo = setInterval(() => {
+            if (cronTiempoRestante <= 0) {
+                cronDetener();
+                cronReproducirAlarma('final');
+                cronEstado.textContent = '✅ ¡Horneado completado! Retirar del horno';
+                cronEstado.style.color = '#4caf50';
+            } else {
+                cronTiempoRestante--;
+                cronActualizarDisplay();
+                
+                // Verificar si llegó a la mitad
+                const tiempoTranscurrido = cronTiempoTotal - cronTiempoRestante;
+                const mitad = cronTiempoTotal / 2;
+                
+                if (!cronVolteoActivado && tiempoTranscurrido >= mitad) {
+                    cronVolteoActivado = true;
+                    cronReproducirAlarma('volteo');
+                    cronEstado.textContent = '🔄 ¡Voltear las latas!';
+                    cronEstado.style.color = '#ffaa44';
+                    setTimeout(() => {
+                        if (cronActivo) {
+                            cronEstado.textContent = '🔥 Horneando...';
+                            cronEstado.style.color = '#D2691E';
+                        }
+                    }, 5000);
+                }
+            }
+        }, 1000);
+    }
+
+    function cronDetener() {
+        if (cronIntervalo) {
+            clearInterval(cronIntervalo);
+            cronIntervalo = null;
+        }
+        cronActivo = false;
+        cronEstado.textContent = '⏸️ Detenido';
+        cronEstado.style.color = '#8B7355';
+    }
+
+    function cronReiniciar() {
+        cronDetener();
+        const minutos = parseInt(cronInput.value) || 0;
+        cronTiempoTotal = minutos * 60;
+        cronTiempoRestante = cronTiempoTotal;
+        cronVolteoActivado = false;
+        cronActualizarDisplay();
+        cronEstado.textContent = '⟳ Reiniciado. Presiona Iniciar';
+        cronEstado.style.color = '#8B7355';
+    }
+
+    // Eventos
+    cronStartBtn.onclick = cronIniciar;
+    cronStopBtn.onclick = cronDetener;
+    cronResetBtn.onclick = cronReiniciar;
+    
+    // Inicializar display
+    cronReiniciar();
 </script>
 
 </body>
