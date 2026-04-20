@@ -27,12 +27,17 @@
 <body>
 
 <div class="product-card">
-    <div class="product-header">
+    <div class="product-header" style="position: relative;">
         <a href="/" class="back-button">
             <i class="fas fa-arrow-left"></i>
         </a>
         <h1>PAN CAMPESINO</h1>
         <p>Fernando Araujo</p>
+        
+        <!-- Botón discreto para mantener pantalla activa -->
+        <button id="wakelockBtn" onclick="toggleWakeLock()" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); backdrop-filter: blur(6px); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(252, 249, 245, 0.3); cursor: pointer; transition: all 0.2s ease; color: white; font-size: 0.85rem;">
+            <i class="fas fa-mobile-alt"></i>
+        </button>
     </div>
 
     <div class="summary-panel">
@@ -76,7 +81,67 @@
     </div>
 </div>
 
+<!-- Mensaje de estado flotante -->
+<div id="wakelockStatus" style="position: fixed; bottom: 20px; left: 20px; background: rgba(0,0,0,0.8); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.7rem; z-index: 1000; display: none; font-family: monospace;"></div>
+
 <script src="/assets/js/funciones-comunes.js"></script>
+
+<script>
+    let wakeLock = null;
+    let wakeLockActivo = false;
+
+    async function toggleWakeLock() {
+        const btn = document.getElementById('wakelockBtn');
+        const statusDiv = document.getElementById('wakelockStatus');
+        
+        if (wakeLockActivo) {
+            // Desactivar Wake Lock
+            if (wakeLock) {
+                await wakeLock.release();
+                wakeLock = null;
+            }
+            wakeLockActivo = false;
+            btn.style.background = "rgba(255,255,255,0.2)";
+            btn.style.color = "white";
+            statusDiv.textContent = '⚡ Pantalla normal';
+            statusDiv.style.background = "rgba(0,0,0,0.8)";
+            statusDiv.style.display = 'block';
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 2000);
+        } else {
+            // Activar Wake Lock
+            try {
+                wakeLock = await navigator.wakeLock.request('screen');
+                wakeLockActivo = true;
+                btn.style.background = "#4caf50";
+                btn.style.color = "white";
+                statusDiv.textContent = '🔋 Pantalla activa (no se apagará)';
+                statusDiv.style.background = "#4caf50";
+                statusDiv.style.display = 'block';
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 3000);
+                
+                // Volver a solicitar Wake Lock si la pantalla se reactiva
+                document.addEventListener('visibilitychange', async () => {
+                    if (wakeLockActivo && document.visibilityState === 'visible') {
+                        try {
+                            wakeLock = await navigator.wakeLock.request('screen');
+                        } catch(e) {}
+                    }
+                });
+            } catch (err) {
+                statusDiv.textContent = '❌ Error: ' + err.message;
+                statusDiv.style.background = "#e53e3e";
+                statusDiv.style.display = 'block';
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 3000);
+            }
+        }
+    }
+</script>
 
 </body>
 </html>
