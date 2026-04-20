@@ -71,11 +71,66 @@
         </div>
     </div>
 
+    <!-- ========== BOTÓN PARA MANTENER PANTALLA ACTIVA ========== -->
+    <div class="action-button">
+        <button class="btn-wakelock" id="wakelockBtn" onclick="toggleWakeLock()">
+            <i class="fas fa-mobile-alt"></i> 🔒 Mantener pantalla activa
+        </button>
+        <div id="wakelockStatus" class="wakelock-status">⚡ La pantalla se apagará según tu configuración</div>
+    </div>
+
     <div class="footer-brand">
         <span>Gestión profesional de panadería</span>
     </div>
 </div>
 
 <script src="/assets/js/funciones-comunes.js"></script>
+
+<!-- ========== SCRIPT PARA WAKE LOCK ========== -->
+<script>
+    let wakeLock = null;
+    let wakeLockActivo = false;
+
+    async function toggleWakeLock() {
+        const btn = document.getElementById('wakelockBtn');
+        const statusDiv = document.getElementById('wakelockStatus');
+        
+        if (wakeLockActivo) {
+            // Desactivar Wake Lock
+            if (wakeLock) {
+                await wakeLock.release();
+                wakeLock = null;
+            }
+            wakeLockActivo = false;
+            btn.innerHTML = '<i class="fas fa-mobile-alt"></i> 🔒 Mantener pantalla activa';
+            btn.style.background = "linear-gradient(135deg, #D2691E, #B85C1A)";
+            statusDiv.innerHTML = '⚡ Pantalla: modo normal (se puede apagar)';
+            statusDiv.className = 'wakelock-status';
+        } else {
+            // Activar Wake Lock
+            try {
+                wakeLock = await navigator.wakeLock.request('screen');
+                wakeLockActivo = true;
+                btn.innerHTML = '<i class="fas fa-mobile-alt"></i> 🔓 Pantalla activa (ON)';
+                btn.style.background = "#4caf50";
+                statusDiv.innerHTML = '🔋 Pantalla activa - No se apagará automáticamente';
+                statusDiv.className = 'wakelock-status active';
+                
+                // Volver a solicitar Wake Lock si la pantalla se reactiva
+                document.addEventListener('visibilitychange', async () => {
+                    if (wakeLockActivo && document.visibilityState === 'visible') {
+                        try {
+                            wakeLock = await navigator.wakeLock.request('screen');
+                        } catch(e) {}
+                    }
+                });
+            } catch (err) {
+                statusDiv.innerHTML = '❌ Error: ' + err.message;
+                statusDiv.className = 'wakelock-status error';
+            }
+        }
+    }
+</script>
+
 </body>
 </html>
