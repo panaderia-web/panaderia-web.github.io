@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Catalinas Amarillas | Gestión de Producción</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/estilo-comun.css">
+    
+    <script>
+        window.datosProducto = {
+            nombre: "Catalinas Amarillas",
+            harinaPorUnidad: 40.0,
+            items: [
+                { nombre: "Harina", pct: 100.0, precioKg: 0 },
+                { nombre: "Agua", pct: 30.8, precioKg: 0 },
+                { nombre: "Azúcar", pct: 43.8, precioKg: 0 },
+                { nombre: "Margarina", pct: 10.0, precioKg: 0 },
+                { nombre: "Sal", pct: 1.0, precioKg: 0 },
+                { nombre: "Polvo de Hornear", pct: 2.0, precioKg: 0 },
+                { nombre: "Bicarbonato", pct: 0.5, precioKg: 0 },
+                { nombre: "Esencia de Limon", pct: 0.5, precioKg: 0 },
+                { nombre: "Color Amarillo", pct: 0.5, precioKg: 0 }
+            ]
+        };
+    </script>
+</head>
+<body>
+
+<div class="product-card">
+    <div class="product-header">
+        <a href="/" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1>CATALINAS AMARILLAS</h1>
+        <p>Fernando Araujo</p>
+    </div>
+
+    <div class="summary-panel">
+        <div class="stats-grid">
+            <div class="stat-card full-width">
+                <div class="stat-label">Cantidad (unidades)</div>
+                <div class="quantity-control">
+                    <input type="number" id="inputPanes" class="qty-input" value="10" min="1" step="5">
+                    <span class="unit-text">unidades</span>
+                </div>
+                <div style="font-size: 0.65rem; color: #8B7355; margin-top: 5px;">
+                    ⚡ Producción sugerida: lotes de 10 unidades
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Costo insumos</div>
+                <div class="stat-value cost" id="resCosto">$ 0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Masa total</div>
+                <div class="stat-value" id="resMasa">0 g</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ingredients-list">
+        <div class="section-title">
+            <i class="fas fa-flour"></i> Ingredientes
+        </div>
+        <div id="listaIngredientes"></div>
+    </div>
+
+    <div class="action-button">
+        <button class="btn-copy" onclick="copiarAlPortapapeles()">
+            <i class="fas fa-copy"></i> Copiar lista
+        </button>
+        <div id="copyMessage" class="copy-message">
+            <i class="fas fa-check-circle"></i> ¡Lista copiada!
+        </div>
+    </div>
+
+    <!-- Botón flotante para mantener pantalla activa -->
+    <div style="position: fixed; bottom: 30px; right: 30px; z-index: 9999;">
+        <button id="btnWakeLock" onclick="toggleWakeLock()" style="width: 55px; height: 55px; border-radius: 50%; background: #D2691E; border: none; color: white; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 22px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+            <i class="fas fa-mobile-alt"></i>
+        </button>
+    </div>
+
+    <!-- Mensaje de estado -->
+    <div id="wakeLockMsg" style="position: fixed; bottom: 30px; left: 30px; background: #333; color: white; padding: 8px 16px; border-radius: 30px; font-size: 13px; z-index: 9999; display: none; font-family: monospace; box-shadow: 0 2px 10px rgba(0,0,0,0.2);"></div>
+
+    <div class="footer-brand">
+        <span>Gestión profesional de panadería</span>
+    </div>
+</div>
+
+<script src="/assets/js/funciones-comunes.js"></script>
+
+<script>
+    let wakeLock = null;
+    let wakeLockActive = false;
+    let btn = document.getElementById('btnWakeLock');
+    let msgDiv = document.getElementById('wakeLockMsg');
+
+    async function toggleWakeLock() {
+        if (wakeLockActive) {
+            if (wakeLock) {
+                await wakeLock.release();
+                wakeLock = null;
+            }
+            wakeLockActive = false;
+            btn.style.background = "#D2691E";
+            mostrarMensaje('⚡ Pantalla normal', '#333');
+        } else {
+            try {
+                wakeLock = await navigator.wakeLock.request('screen');
+                wakeLockActive = true;
+                btn.style.background = "#4caf50";
+                mostrarMensaje('🔋 Pantalla activa (no se apagará)', '#4caf50');
+                
+                document.addEventListener('visibilitychange', async () => {
+                    if (wakeLockActive && document.visibilityState === 'visible') {
+                        try {
+                            wakeLock = await navigator.wakeLock.request('screen');
+                        } catch(e) {}
+                    }
+                });
+            } catch (err) {
+                mostrarMensaje('❌ Error: ' + err.message, '#e53e3e');
+            }
+        }
+    }
+
+    function mostrarMensaje(texto, color) {
+        msgDiv.textContent = texto;
+        msgDiv.style.background = color;
+        msgDiv.style.display = 'block';
+        setTimeout(() => {
+            msgDiv.style.display = 'none';
+        }, 2500);
+    }
+</script>
+
+</body>
+</html>
