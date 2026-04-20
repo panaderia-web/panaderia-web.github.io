@@ -82,5 +82,64 @@
 </div>
 
 <script src="/assets/js/funciones-comunes.js"></script>
+<!-- BOTÓN FLOTANTE PARA MANTENER PANTALLA ACTIVA -->
+<div id="floatingWakelockBtn" onclick="toggleWakeLock()" style="position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #8B4513; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 9999; transition: all 0.2s ease; border: none;">
+    <i class="fas fa-mobile-alt" style="font-size: 1.2rem;"></i>
+</div>
+
+<!-- Mensaje de estado flotante -->
+<div id="wakelockStatus" style="position: fixed; bottom: 20px; left: 20px; background: rgba(0,0,0,0.8); color: white; padding: 8px 16px; border-radius: 30px; font-size: 0.75rem; z-index: 10000; display: none; font-family: monospace;"></div>
+
+<script>
+    let wakeLock = null;
+    let wakeLockActivo = false;
+
+    async function toggleWakeLock() {
+        const btn = document.getElementById('floatingWakelockBtn');
+        const statusDiv = document.getElementById('wakelockStatus');
+        
+        if (wakeLockActivo) {
+            if (wakeLock) {
+                await wakeLock.release();
+                wakeLock = null;
+            }
+            wakeLockActivo = false;
+            btn.style.background = "#8B4513";
+            statusDiv.textContent = '⚡ Pantalla normal';
+            statusDiv.style.background = "rgba(0,0,0,0.8)";
+            statusDiv.style.display = 'block';
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 2000);
+        } else {
+            try {
+                wakeLock = await navigator.wakeLock.request('screen');
+                wakeLockActivo = true;
+                btn.style.background = "#4caf50";
+                statusDiv.textContent = '🔋 Pantalla activa (no se apagará)';
+                statusDiv.style.background = "#4caf50";
+                statusDiv.style.display = 'block';
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 3000);
+                
+                document.addEventListener('visibilitychange', async () => {
+                    if (wakeLockActivo && document.visibilityState === 'visible') {
+                        try {
+                            wakeLock = await navigator.wakeLock.request('screen');
+                        } catch(e) {}
+                    }
+                });
+            } catch (err) {
+                statusDiv.textContent = '❌ Error: ' + err.message;
+                statusDiv.style.background = "#e53e3e";
+                statusDiv.style.display = 'block';
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 3000);
+            }
+        }
+    }
+</script>
 </body>
 </html>
