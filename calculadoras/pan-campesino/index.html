@@ -62,6 +62,7 @@
         <div id="listaIngredientes"></div>
     </div>
 
+    <!-- Botón Copiar lista -->
     <div class="action-button">
         <button class="btn-copy" onclick="copiarAlPortapapeles()">
             <i class="fas fa-copy"></i> Copiar lista
@@ -71,7 +72,7 @@
         </div>
     </div>
 
-    <!-- ========== BOTÓN PARA MANTENER PANTALLA ACTIVA ========== -->
+    <!-- Botón Mantener pantalla activa -->
     <div class="action-button">
         <button class="btn-wakelock" id="wakelockBtn" onclick="toggleWakeLock()">
             <i class="fas fa-mobile-alt"></i> 🔒 Mantener pantalla activa
@@ -86,7 +87,7 @@
 
 <script src="/assets/js/funciones-comunes.js"></script>
 
-<!-- ========== SCRIPT PARA WAKE LOCK ========== -->
+<!-- Script para Wake Lock -->
 <script>
     let wakeLock = null;
     let wakeLockActivo = false;
@@ -96,7 +97,6 @@
         const statusDiv = document.getElementById('wakelockStatus');
         
         if (wakeLockActivo) {
-            // Desactivar Wake Lock
             if (wakeLock) {
                 await wakeLock.release();
                 wakeLock = null;
@@ -107,7 +107,6 @@
             statusDiv.innerHTML = '⚡ Pantalla: modo normal (se puede apagar)';
             statusDiv.className = 'wakelock-status';
         } else {
-            // Activar Wake Lock
             try {
                 wakeLock = await navigator.wakeLock.request('screen');
                 wakeLockActivo = true;
@@ -116,7 +115,6 @@
                 statusDiv.innerHTML = '🔋 Pantalla activa - No se apagará automáticamente';
                 statusDiv.className = 'wakelock-status active';
                 
-                // Volver a solicitar Wake Lock si la pantalla se reactiva
                 document.addEventListener('visibilitychange', async () => {
                     if (wakeLockActivo && document.visibilityState === 'visible') {
                         try {
