@@ -62,5 +62,13 @@
     {
         "nombre": "Harina de maiz",
         "precioKg": 1.4
+    },
+    {
+        "nombre": "Color Amarillo",
+        "precioKg": 20
+    },
+    {
+        "nombre": "Esencia de Limon",
+        "precioKg": 44
     }
 ]
