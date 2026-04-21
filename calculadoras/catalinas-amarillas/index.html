@@ -3,10 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Catalinas Amarillas | Gestión de Producción</title>
+    <title>Catalinas Amarillas | Gestión de Produktion</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/estilo-comun.css">
+    
+    <style>
+        /* Estilos específicos para el botón wake lock en el header */
+        .btn-wakelock-header {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(6px);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(252, 249, 245, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: white;
+            font-size: 0.85rem;
+        }
+        .btn-wakelock-header:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .btn-wakelock-active {
+            background: #4caf50 !important;
+        }
+        .wakelock-status-msg {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            z-index: 10000;
+            display: none;
+            font-family: monospace;
+        }
+    </style>
     
     <script>
         window.datosProducto = {
@@ -29,12 +71,17 @@
 <body>
 
 <div class="product-card">
-    <div class="product-header">
+    <div class="product-header" style="position: relative;">
         <a href="/" class="back-button">
             <i class="fas fa-arrow-left"></i>
         </a>
         <h1>CATALINAS AMARILLAS</h1>
         <p>Fernando Araujo</p>
+        
+        <!-- Botón discreto para mantener pantalla activa (junto al botón de retroceso) -->
+        <div id="wakelockBtn" class="btn-wakelock-header" onclick="toggleWakeLock()">
+            <i class="fas fa-mobile-alt"></i>
+        </div>
     </div>
 
     <div class="summary-panel">
@@ -76,65 +123,64 @@
         </div>
     </div>
 
-    <!-- Botón flotante para mantener pantalla activa -->
-    <div style="position: fixed; bottom: 30px; right: 30px; z-index: 9999;">
-        <button id="btnWakeLock" onclick="toggleWakeLock()" style="width: 55px; height: 55px; border-radius: 50%; background: #D2691E; border: none; color: white; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 22px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
-            <i class="fas fa-mobile-alt"></i>
-        </button>
-    </div>
-
-    <!-- Mensaje de estado -->
-    <div id="wakeLockMsg" style="position: fixed; bottom: 30px; left: 30px; background: #333; color: white; padding: 8px 16px; border-radius: 30px; font-size: 13px; z-index: 9999; display: none; font-family: monospace; box-shadow: 0 2px 10px rgba(0,0,0,0.2);"></div>
-
     <div class="footer-brand">
         <span>Gestión profesional de panadería</span>
     </div>
 </div>
 
+<!-- Mensaje de estado flotante -->
+<div id="wakelockStatus" class="wakelock-status-msg"></div>
+
 <script src="/assets/js/funciones-comunes.js"></script>
 
 <script>
     let wakeLock = null;
-    let wakeLockActive = false;
-    let btn = document.getElementById('btnWakeLock');
-    let msgDiv = document.getElementById('wakeLockMsg');
+    let wakeLockActivo = false;
+    const btn = document.getElementById('wakelockBtn');
+    const statusDiv = document.getElementById('wakelockStatus');
 
     async function toggleWakeLock() {
-        if (wakeLockActive) {
+        if (wakeLockActivo) {
             if (wakeLock) {
                 await wakeLock.release();
                 wakeLock = null;
             }
-            wakeLockActive = false;
-            btn.style.background = "#D2691E";
-            mostrarMensaje('⚡ Pantalla normal', '#333');
+            wakeLockActivo = false;
+            btn.classList.remove('btn-wakelock-active');
+            statusDiv.textContent = '⚡ Pantalla normal';
+            statusDiv.style.background = "rgba(0,0,0,0.8)";
+            statusDiv.style.display = 'block';
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 2000);
         } else {
             try {
                 wakeLock = await navigator.wakeLock.request('screen');
-                wakeLockActive = true;
-                btn.style.background = "#4caf50";
-                mostrarMensaje('🔋 Pantalla activa (no se apagará)', '#4caf50');
+                wakeLockActivo = true;
+                btn.classList.add('btn-wakelock-active');
+                statusDiv.textContent = '🔋 Pantalla activa (no se apagará)';
+                statusDiv.style.background = "#4caf50";
+                statusDiv.style.display = 'block';
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 3000);
                 
                 document.addEventListener('visibilitychange', async () => {
-                    if (wakeLockActive && document.visibilityState === 'visible') {
+                    if (wakeLockActivo && document.visibilityState === 'visible') {
                         try {
                             wakeLock = await navigator.wakeLock.request('screen');
                         } catch(e) {}
                     }
                 });
             } catch (err) {
-                mostrarMensaje('❌ Error: ' + err.message, '#e53e3e');
+                statusDiv.textContent = '❌ Error: ' + err.message;
+                statusDiv.style.background = "#e53e3e";
+                statusDiv.style.display = 'block';
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 3000);
             }
         }
-    }
-
-    function mostrarMensaje(texto, color) {
-        msgDiv.textContent = texto;
-        msgDiv.style.background = color;
-        msgDiv.style.display = 'block';
-        setTimeout(() => {
-            msgDiv.style.display = 'none';
-        }, 2500);
     }
 </script>
 
