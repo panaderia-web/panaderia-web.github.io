@@ -307,6 +307,26 @@
             color: var(--text-muted);
         }
 
+        /* Estilos para el módulo Admin */
+        .admin-input {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-stone);
+            border-radius: 12px;
+            padding: 10px;
+            font-weight: 500;
+            color: var(--text-dark);
+            outline: none;
+            text-align: center;
+            width: 120px;
+        }
+        .admin-input:focus {
+            border-color: var(--color-primary);
+        }
+        .admin-msg {
+            margin-top: 10px;
+            font-size: 0.7rem;
+        }
+
         .footer {
             background: #2c2418;
             color: #b48c62;
@@ -349,22 +369,7 @@
 </head>
 <body>
 
-<!-- Módulo de Administración -->
-<div class="tool-card" id="adminCard">
-    <i class="fas fa-lock"></i>
-    <h3>Administración</h3>
-    <p>Acceso restringido al panel de gestión de precios.</p>
-    
-    <div style="margin-top: 15px;">
-        <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 10px;">
-            <input type="password" id="adminClave" class="cronometro-input" placeholder="Clave" style="width: 120px;">
-        </div>
-        <div style="display: flex; gap: 10px; justify-content: center;">
-            <button id="adminAccederBtn" class="cronometro-boton cronometro-boton-start">🔓 Acceder</button>
-        </div>
-        <div id="adminMsg" style="margin-top: 10px; font-size: 0.7rem; color: #e53e3e;"></div>
-    </div>
-</div>
+<!-- Enlace al panel de administración (eliminado, ahora está en herramientas) -->
 
 <!-- MENÚ DE NAVEGACIÓN -->
 <nav class="navbar">
@@ -462,6 +467,23 @@
                     <div id="cronEstado" class="cronometro-estado">⏳ Esperando inicio</div>
                 </div>
             </div>
+
+            <!-- MÓDULO DE ADMINISTRACIÓN -->
+            <div class="tool-card">
+                <i class="fas fa-lock"></i>
+                <h3>Administración</h3>
+                <p>Acceso restringido al panel de gestión de precios.</p>
+                
+                <div style="margin-top: 15px;">
+                    <div style="display: flex; justify-content: center; margin-bottom: 10px;">
+                        <input type="password" id="adminClave" class="admin-input" placeholder="Clave">
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button id="adminAccederBtn" class="cronometro-boton cronometro-boton-start">🔓 Acceder</button>
+                    </div>
+                    <div id="adminMsg" class="admin-msg"></div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -512,9 +534,9 @@
         { nombre: "Paledonia", url: "/calculadoras/paledonia/", img: "/imagenes/paledonia.png" },
         { nombre: "Torta de Naranja", url: "/calculadoras/torta-naranja/", img: "/imagenes/torta-naranja.webp" },
         { nombre: "Catalinas Negras", url: "/calculadoras/catalinas-negras/", img: "/imagenes/catalinas-negras.webp" },
-        { nombre: "Catalinas Amarillas", url: "/calculadoras/catalinas-amarillas/", img: "/imagenes/catalinas-amarillas.webp" },
         { nombre: "Arepas de Trigo", url: "/calculadoras/arepas-trigo/", img: "/imagenes/arepas-trigo.webp" },
-        { nombre: "Arepas de Maíz", url: "/calculadoras/arepas-maiz/", img: "/imagenes/arepas-maiz.webp" }
+        { nombre: "Arepas de Maíz", url: "/calculadoras/arepas-maiz/", img: "/imagenes/arepas-maiz.webp" },
+        { nombre: "Catalinas Amarillas", url: "/calculadoras/catalinas-amarillas/", img: "/imagenes/Catalina-amarilla.jpg" }
     ];
 
     function cargarProductos() {
@@ -545,7 +567,6 @@
     let cronVolteoActivado = false;
     let contextoAudioCron = null;
 
-    // Elementos del DOM
     const cronInput = document.getElementById('cronMinutos');
     const cronDisplay = document.getElementById('cronDisplay');
     const cronEstado = document.getElementById('cronEstado');
@@ -560,18 +581,13 @@
     }
 
     function cronReproducirAlarma(tipo) {
-        // Detener cualquier alarma anterior
         if (contextoAudioCron) {
-            try {
-                contextoAudioCron.close();
-            } catch(e) {}
+            try { contextoAudioCron.close(); } catch(e) {}
             contextoAudioCron = null;
         }
-        
         try {
             contextoAudioCron = new (window.AudioContext || window.webkitAudioContext)();
             const inicio = contextoAudioCron.currentTime;
-            
             const crearOscilador = (frecuencia, inicioOffset, duracion, volumen = 0.45) => {
                 const osc = contextoAudioCron.createOscillator();
                 const gain = contextoAudioCron.createGain();
@@ -588,80 +604,43 @@
                 osc.stop(tiempoInicio + duracion);
                 return osc;
             };
-            
             if (tipo === 'volteo') {
-                // Alarma para voltear - 10 segundos
                 crearOscilador(660, 0, 1.5, 0.45);
                 crearOscilador(880, 1.8, 1.5, 0.45);
                 crearOscilador(660, 3.6, 1.5, 0.45);
                 crearOscilador(880, 5.4, 1.5, 0.45);
                 crearOscilador(660, 7.2, 1.5, 0.45);
                 crearOscilador(880, 9.0, 1.0, 0.5);
-                
-                if ('vibrate' in navigator) {
-                    navigator.vibrate([500, 200, 500, 200, 500, 200, 500, 200, 500]);
-                }
-                
-                // Notificación
+                if ('vibrate' in navigator) navigator.vibrate([500, 200, 500, 200, 500, 200, 500, 200, 500]);
                 if ('Notification' in window && Notification.permission === 'granted') {
-                    new Notification('🔄 ¡Voltear las latas!', {
-                        body: 'Ha pasado la mitad del tiempo de horneado',
-                        vibrate: [500, 200, 500]
-                    });
+                    new Notification('🔄 ¡Voltear las latas!', { body: 'Ha pasado la mitad del tiempo de horneado' });
                 }
             } else {
-                // Alarma final - 10 segundos (más intensa)
                 crearOscilador(880, 0, 1.5, 0.5);
                 crearOscilador(660, 1.8, 1.5, 0.5);
                 crearOscilador(880, 3.6, 1.5, 0.5);
                 crearOscilador(660, 5.4, 1.5, 0.5);
                 crearOscilador(880, 7.2, 1.5, 0.5);
                 crearOscilador(440, 9.0, 1.0, 0.5);
-                
-                if ('vibrate' in navigator) {
-                    navigator.vibrate([600, 200, 600, 200, 600, 200, 600, 200, 600]);
-                }
-                
-                // Notificación
+                if ('vibrate' in navigator) navigator.vibrate([600, 200, 600, 200, 600, 200, 600, 200, 600]);
                 if ('Notification' in window && Notification.permission === 'granted') {
-                    new Notification('🍞 ¡Pan listo!', {
-                        body: 'El tiempo de horneado ha terminado',
-                        vibrate: [600, 200, 600]
-                    });
+                    new Notification('🍞 ¡Pan listo!', { body: 'El tiempo de horneado ha terminado' });
                 }
             }
-            
-            // Cerrar contexto después de la alarma
             setTimeout(() => {
                 if (contextoAudioCron) {
-                    try {
-                        contextoAudioCron.close();
-                    } catch(e) {}
+                    try { contextoAudioCron.close(); } catch(e) {}
                     contextoAudioCron = null;
                 }
             }, 10500);
-            
-        } catch(e) {
-            console.log('Alarma no disponible:', e);
-        }
+        } catch(e) { console.log('Alarma no disponible:', e); }
     }
 
     function cronIniciar() {
-        if (cronActivo) {
-            cronDetener();
-        }
-        
+        if (cronActivo) cronDetener();
         const minutos = parseInt(cronInput.value) || 0;
-        if (minutos <= 0) {
-            cronEstado.textContent = '⚠️ Ingresa un tiempo válido';
-            return;
-        }
-        
-        // Solicitar permiso de notificaciones si es necesario
-        if ('Notification' in window && Notification.permission === 'default') {
-            Notification.requestPermission();
-        }
-        
+        if (minutos <= 0) { cronEstado.textContent = '⚠️ Ingresa un tiempo válido'; return; }
+        if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
         cronTiempoTotal = minutos * 60;
         cronTiempoRestante = cronTiempoTotal;
         cronVolteoActivado = false;
@@ -669,7 +648,6 @@
         cronActualizarDisplay();
         cronEstado.textContent = '🔥 Horneando...';
         cronEstado.style.color = '#D2691E';
-        
         cronIntervalo = setInterval(() => {
             if (cronTiempoRestante <= 0) {
                 cronDetener();
@@ -679,21 +657,15 @@
             } else {
                 cronTiempoRestante--;
                 cronActualizarDisplay();
-                
-                // Verificar si llegó a la mitad
                 const tiempoTranscurrido = cronTiempoTotal - cronTiempoRestante;
                 const mitad = cronTiempoTotal / 2;
-                
                 if (!cronVolteoActivado && tiempoTranscurrido >= mitad) {
                     cronVolteoActivado = true;
                     cronReproducirAlarma('volteo');
                     cronEstado.textContent = '🔄 ¡Voltear las latas!';
                     cronEstado.style.color = '#ffaa44';
                     setTimeout(() => {
-                        if (cronActivo) {
-                            cronEstado.textContent = '🔥 Horneando...';
-                            cronEstado.style.color = '#D2691E';
-                        }
+                        if (cronActivo) { cronEstado.textContent = '🔥 Horneando...'; cronEstado.style.color = '#D2691E'; }
                     }, 5000);
                 }
             }
@@ -701,10 +673,7 @@
     }
 
     function cronDetener() {
-        if (cronIntervalo) {
-            clearInterval(cronIntervalo);
-            cronIntervalo = null;
-        }
+        if (cronIntervalo) { clearInterval(cronIntervalo); cronIntervalo = null; }
         cronActivo = false;
         cronEstado.textContent = '⏸️ Detenido';
         cronEstado.style.color = '#8B7355';
@@ -721,15 +690,14 @@
         cronEstado.style.color = '#8B7355';
     }
 
-    // Eventos
     cronStartBtn.onclick = cronIniciar;
     cronStopBtn.onclick = cronDetener;
     cronResetBtn.onclick = cronReiniciar;
-    
-    // Inicializar display
     cronReiniciar();
+</script>
 
-        // ========== MÓDULO DE ADMINISTRACIÓN ==========
+<!-- ========== MÓDULO DE ADMINISTRACIÓN ========== -->
+<script>
     const adminClaveInput = document.getElementById('adminClave');
     const adminAccederBtn = document.getElementById('adminAccederBtn');
     const adminMsg = document.getElementById('adminMsg');
