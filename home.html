@@ -281,7 +281,6 @@
 <body>
 
     <!-- ========== SECCIÓN HERO (IMAGEN DE CABECERA) ========== -->
-    <!-- ELIMINÉ LOS BOTONES "VER PRODUCTOS" Y "← VOLVER AL MENÚ PRINCIPAL" -->
     <section id="inicio" class="hero" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/imagenes/Encabezado.png') center/cover no-repeat;">
         <div class="hero-content">
             <p>Calculadoras profesionales para panaderos. Optimiza tus costos, ajusta recetas y gestiona tu producción.</p>
@@ -376,7 +375,8 @@
             { nombre: "Catalinas Negras", url: "/calculadoras/catalinas-negras/", img: "/imagenes/catalinas-negras.webp" },
             { nombre: "Arepas de Trigo", url: "/calculadoras/arepas-trigo/", img: "/imagenes/arepas-trigo.webp" },
             { nombre: "Arepas de Maíz", url: "/calculadoras/arepas-maiz/", img: "/imagenes/arepas-maiz.webp" },
-            { nombre: "Catalinas Amarillas", url: "/calculadoras/catalinas-amarillas/", img: "/imagenes/Catalina-amarilla.weps" }
+            { nombre: "Catalinas Amarillas", url: "/calculadoras/catalinas-amarillas/", img: "/imagenes/catalinas-amarillas.webp" },
+            { nombre: "Galletas de Huevo", url: "/calculadoras/galletas-huevo/", img: "/imagenes/galletas-huevo.webp" }
         ];
 
         function cargarProductos() {
@@ -427,125 +427,4 @@
                     <i class="fas fa-book-open"></i>
                     <h3>Guía de ingredientes</h3>
                     <p>Conoce las propiedades de cada ingrediente y su uso.</p>
-                    <a href="#">Próximamente →</a>
-                </div>
-                <div class="tool-card">
-                    <i class="fas fa-stopwatch"></i>
-                    <h3>Cronómetro de horneado</h3>
-                    <p>Controla el tiempo de horneado con alarmas para voltear y retirar.</p>
-                    <div style="margin-top: 15px;">
-                        <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;">
-                            <input type="number" id="cronMinutos" class="cronometro-input" value="25" min="1" max="120" step="1">
-                            <span>minutos</span>
-                        </div>
-                        <div id="cronDisplay" class="cronometro-display">00:00</div>
-                        <div style="display: flex; gap: 10px; justify-content: center;">
-                            <button id="cronStart" class="cronometro-boton cronometro-boton-start">▶ Iniciar</button>
-                            <button id="cronStop" class="cronometro-boton cronometro-boton-stop">⏹ Detener</button>
-                            <button id="cronReset" class="cronometro-boton cronometro-boton-reset">⟳ Reiniciar</button>
-                        </div>
-                        <div id="cronEstado" class="cronometro-estado">⏳ Esperando inicio</div>
-                    </div>
-                </div>
-                <div class="tool-card">
-                    <i class="fas fa-lock"></i>
-                    <h3>Administración</h3>
-                    <p>Acceso restringido al panel de gestión de precios.</p>
-                    <div style="margin-top: 15px;">
-                        <div style="display: flex; justify-content: center; margin-bottom: 10px;">
-                            <input type="password" id="adminClave" class="admin-input" placeholder="Clave">
-                        </div>
-                        <div style="display: flex; gap: 10px; justify-content: center;">
-                            <button id="adminAccederBtn" class="cronometro-boton cronometro-boton-start">🔓 Acceder</button>
-                        </div>
-                        <div id="adminMsg" class="admin-msg"></div>
-                    </div>
-                </div>
-            `;
-
-            // Inicializar eventos después de cargar el HTML
-            inicializarCronometro();
-            inicializarAdmin();
-        }
-
-        function inicializarCronometro() {
-            let cronTiempoTotal = 0, cronTiempoRestante = 0, cronActivo = false, cronIntervalo = null, cronVolteoActivado = false;
-            const cronInput = document.getElementById('cronMinutos');
-            const cronDisplay = document.getElementById('cronDisplay');
-            const cronEstado = document.getElementById('cronEstado');
-            const cronStartBtn = document.getElementById('cronStart');
-            const cronStopBtn = document.getElementById('cronStop');
-            const cronResetBtn = document.getElementById('cronReset');
-            if (!cronStartBtn) return;
-
-            function actualizarDisplay() {
-                const minutos = Math.floor(cronTiempoRestante / 60);
-                const segundos = cronTiempoRestante % 60;
-                cronDisplay.textContent = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
-            }
-            function iniciar() {
-                if (cronActivo) detener();
-                const minutos = parseInt(cronInput.value) || 0;
-                if (minutos <= 0) { cronEstado.textContent = '⚠️ Ingresa un tiempo válido'; return; }
-                cronTiempoTotal = minutos * 60;
-                cronTiempoRestante = cronTiempoTotal;
-                cronVolteoActivado = false;
-                cronActivo = true;
-                actualizarDisplay();
-                cronEstado.textContent = '🔥 Horneando...';
-                cronEstado.style.color = '#D2691E';
-                cronIntervalo = setInterval(() => {
-                    if (cronTiempoRestante <= 0) {
-                        detener();
-                        cronEstado.textContent = '✅ ¡Horneado completado! Retirar del horno';
-                        cronEstado.style.color = '#4caf50';
-                    } else {
-                        cronTiempoRestante--;
-                        actualizarDisplay();
-                        const tiempoTranscurrido = cronTiempoTotal - cronTiempoRestante;
-                        if (!cronVolteoActivado && tiempoTranscurrido >= cronTiempoTotal / 2) {
-                            cronVolteoActivado = true;
-                            cronEstado.textContent = '🔄 ¡Voltear las latas!';
-                            cronEstado.style.color = '#ffaa44';
-                            setTimeout(() => { if (cronActivo) { cronEstado.textContent = '🔥 Horneando...'; cronEstado.style.color = '#D2691E'; } }, 5000);
-                        }
-                    }
-                }, 1000);
-            }
-            function detener() { if (cronIntervalo) { clearInterval(cronIntervalo); cronIntervalo = null; } cronActivo = false; cronEstado.textContent = '⏸️ Detenido'; cronEstado.style.color = '#8B7355'; }
-            function reiniciar() { detener(); const minutos = parseInt(cronInput.value) || 0; cronTiempoTotal = minutos * 60; cronTiempoRestante = cronTiempoTotal; cronVolteoActivado = false; actualizarDisplay(); cronEstado.textContent = '⟳ Reiniciado. Presiona Iniciar'; cronEstado.style.color = '#8B7355'; }
-            cronStartBtn.onclick = iniciar;
-            cronStopBtn.onclick = detener;
-            cronResetBtn.onclick = reiniciar;
-            reiniciar();
-        }
-
-        function inicializarAdmin() {
-            const adminInput = document.getElementById('adminClave');
-            const adminBtn = document.getElementById('adminAccederBtn');
-            const adminMsg = document.getElementById('adminMsg');
-            if (!adminBtn) return;
-            const CLAVE = "1234";
-            function acceder() {
-                if (adminInput.value === CLAVE) {
-                    adminMsg.textContent = '✅ Acceso concedido. Redirigiendo...';
-                    adminMsg.style.color = '#4caf50';
-                    setTimeout(() => window.location.href = '/admin.html', 1000);
-                } else {
-                    adminMsg.textContent = '❌ Clave incorrecta. Acceso denegado.';
-                    adminMsg.style.color = '#e53e3e';
-                    adminInput.value = '';
-                    adminInput.focus();
-                }
-            }
-            adminBtn.onclick = acceder;
-            adminInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') acceder(); });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            cargarProductos();
-            cargarHerramientas();
-        });
-    </script>
-</body>
-</html>
+                    <a
