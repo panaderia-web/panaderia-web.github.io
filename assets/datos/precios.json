@@ -70,5 +70,9 @@
     {
         "nombre": "Esencia de Limon",
         "precioKg": 44
+    },
+    {
+        "nombre": "Caramelina",
+        "precioKg": 11
     }
 ]
