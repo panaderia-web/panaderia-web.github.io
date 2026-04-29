@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Galletas de Huevo | Gestión de Producción</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/estilo-comun.css">
+    
+    <style>
+        /* Estilos específicos para el botón wake lock */
+        .btn-wakelock-header {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(6px);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(252, 249, 245, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: white;
+            font-size: 0.85rem;
+        }
+        .btn-wakelock-header:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .btn-wakelock-active {
+            background: #4caf50 !important;
+        }
+        .wakelock-status-msg {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            z-index: 10000;
+            display: none;
+            font-family: monospace;
+        }
+    </style>
+    
+    <script>
+        window.datosProducto = {
+            nombre: "Galletas de Huevo",
+            harinaPorUnidad: 42.0,
+            items: [
+                { nombre: "Harina", pct: 100.0, precioKg: 0 },
+                { nombre: "Agua", pct: 29.4, precioKg: 0 },
+                { nombre: "Azúcar", pct: 46.8, precioKg: 0 },
+                { nombre: "Margarina", pct: 10.0, precioKg: 0 },
+                { nombre: "Sal", pct: 0.6, precioKg: 0 },
+                { nombre: "Polvo de Hornear", pct: 1.5, precioKg: 0 },
+                { nombre: "Bicarbonato", pct: 0.5, precioKg: 0 },
+                { nombre: "Leche en Polvo", pct: 4.2, precioKg: 0 },
+                { nombre: "Huevo", pct: 5.8, precioKg: 0 },
+                { nombre: "Esencia de Vainilla", pct: 0.6, precioKg: 0 },
+                { nombre: "Esencia de Limon", pct: 0.5, precioKg: 0 },
+                { nombre: "Esencia de Nata", pct: 2.4, precioKg: 0 },
+                { nombre: "Color Amarillo", pct: 2.1, precioKg: 0 }
+            ]
+        };
+    </script>
+</head>
+<body>
+
+<div class="product-card">
+    <div class="product-header" style="position: relative;">
+        <a href="/" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1>GALLETAS DE HUEVO</h1>
+        <p>Fernando Araujo</p>
+        
+        <!-- Botón para mantener pantalla activa (junto al botón de retroceso) -->
+        <div id="wakelockBtn" class="btn-wakelock-header" onclick="toggleWakeLock()">
+            <i class="fas fa-mobile-alt"></i>
+        </div>
+    </div>
+
+    <div class="summary-panel">
+        <div class="stats-grid">
+            <div class="stat-card full-width">
+                <div class="stat-label">Cantidad (unidades)</div>
+                <div class="quantity-control">
+                    <input type="number" id="inputPanes" class="qty-input" value="10" min="1" step="5">
+                    <span class="unit-text">unidades</span>
+                </div>
+                <div style="font-size: 0.65rem; color: #8B7355; margin-top: 5px;">
+                    ⚡ Producción sugerida: lotes de 10 unidades
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Costo insumos</div>
+                <div class="stat-value cost" id="resCosto">$ 0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Masa total</div>
+                <div class="stat-value" id="resMasa">0 g</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ingredients-list">
+        <div class="section-title">
+            <i class="fas fa-flour"></i> Ingredientes
+        </div>
+        <div id="listaIngredientes"></div>
+    </div>
+
+    <div class="action-button">
+        <button class="btn-copy" onclick="copiarAlPortapapeles()">
+            <i class="fas fa-copy"></i> Copiar lista
+        </button>
+        <div id="copyMessage" class="copy-message">
+            <i class="fas fa-check-circle"></i> ¡Lista copiada!
+        </div>
+    </div>
+
+    <div class="footer-brand">
+        <span>Gestión profesional de panadería</span>
+    </div>
+</div>
+
+<!-- Mensaje de estado -->
+<div id="wakelockStatus" class="wakelock-status-msg"></div>
+
+<script src="/assets/js/funciones-comunes.js"></script>
+
+<script>
+    let wakeLock = null;
+    let wakeLockActivo = false;
+    const btn = document.getElementById('wakelockBtn');
+    const statusDiv = document.getElementById('wakelockStatus');
+
+    async function toggleWakeLock() {
+        if (wakeLockActivo) {
+            if (wakeLock) {
+                await wakeLock.release();
+                wakeLock = null;
+            }
+            wakeLockActivo = false;
+            btn.classList.remove('btn-wakelock-active');
+            statusDiv.textContent = '⚡ Pantalla normal';
+            statusDiv.style.background = "rgba(0,0,0,0.8)";
+            statusDiv.style.display = 'block';
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 2000);
+        } else {
+            try {
+                wakeLock = await navigator.wakeLock.request('screen');
+                wakeLockActivo = true;
+                btn.classList.add('btn-wakelock-active');
+                statusDiv.textContent = '🔋 Pantalla activa (no se apagará)';
+                statusDiv.style.background = "#4caf50";
+                statusDiv.style.display = 'block';
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 3000);
+                
+                document.addEventListener('visibilitychange', async () => {
+                    if (wakeLockActivo && document.visibilityState === 'visible') {
+                        try {
+                            wakeLock = await navigator.wakeLock.request('screen');
+                        } catch(e) {}
+                    }
+                });
+            } catch (err) {
+                statusDiv.textContent = '❌ Error: ' + err.message;
+                statusDiv.style.background = "#e53e3e";
+                statusDiv.style.display = 'block';
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 3000);
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
