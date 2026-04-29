@@ -63,7 +63,8 @@
                 { nombre: "Polvo de Hornear", pct: 2.5, precioKg: 0 },
                 { nombre: "Bicarbonato", pct: 0.5, precioKg: 0 },
                 { nombre: "Canela", pct: 2.0, precioKg: 0 },
-                { nombre: "Anis Dulce", pct: 0.8, precioKg: 0 }
+                { nombre: "Anis Dulce", pct: 0.8, precioKg: 0 },
+                { nombre: "Caramelina", pct: 1.5, precioKg: 0 }
             ]
         };
     </script>
@@ -141,7 +142,6 @@
 
     async function toggleWakeLock() {
         if (wakeLockActivo) {
-            // Desactivar
             if (wakeLock) {
                 await wakeLock.release();
                 wakeLock = null;
@@ -155,7 +155,6 @@
                 statusDiv.style.display = 'none';
             }, 2000);
         } else {
-            // Activar
             try {
                 wakeLock = await navigator.wakeLock.request('screen');
                 wakeLockActivo = true;
@@ -167,7 +166,6 @@
                     statusDiv.style.display = 'none';
                 }, 3000);
                 
-                // Recuperar wake lock si la página se vuelve visible
                 document.addEventListener('visibilitychange', async () => {
                     if (wakeLockActivo && document.visibilityState === 'visible') {
                         try {
