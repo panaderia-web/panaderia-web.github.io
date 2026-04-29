@@ -74,5 +74,9 @@
     {
         "nombre": "Caramelina",
         "precioKg": 11
+    },
+    {
+        "nombre": "Leche en polvo",
+        "precioKg": 18.5
     }
 ]
