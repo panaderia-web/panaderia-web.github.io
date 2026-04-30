@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* ========== ESTILOS EXISTENTES (sin cambios) ========== */
         * {
             margin: 0;
             padding: 0;
@@ -43,7 +42,6 @@
             padding: 0 20px;
         }
 
-        /* ========== ESTILOS DEL MENÚ (AHORA DEBAJO DEL HERO) ========== */
         .navbar {
             background: var(--bg-card);
             border-bottom: 1px solid var(--border-stone);
@@ -79,7 +77,6 @@
             color: var(--color-primary);
         }
 
-        /* ========== ESTILOS DEL HERO (SIN BOTONES) ========== */
         .hero {
             color: white;
             padding: 100px 0;
@@ -100,7 +97,6 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
 
-        /* ========== RESTO DE ESTILOS (SIN CAMBIOS) ========== */
         .section {
             padding: 60px 0;
         }
@@ -215,8 +211,7 @@
             font-weight: 600;
         }
 
-        /* Estilos para el cronómetro y admin */
-        .cronometro-input, .admin-input {
+        .cronometro-input {
             background: var(--bg-card);
             border: 1.5px solid var(--border-stone);
             border-radius: 12px;
@@ -228,8 +223,9 @@
             width: 80px;
             font-size: 1rem;
         }
-        .admin-input { width: 120px; }
-        .cronometro-input:focus, .admin-input:focus { border-color: var(--color-primary); }
+        .cronometro-input:focus {
+            border-color: var(--color-primary);
+        }
         .cronometro-display {
             font-family: monospace;
             font-size: 2rem;
@@ -252,12 +248,30 @@
         .cronometro-boton-stop:hover { background: #c53030; transform: translateY(-1px); }
         .cronometro-boton-reset { background: #718096; color: white; }
         .cronometro-boton-reset:hover { background: #4a5568; transform: translateY(-1px); }
-        .cronometro-estado, .admin-msg {
+        .cronometro-estado {
             margin-top: 10px;
             font-size: 0.75rem;
             color: var(--text-muted);
         }
-        .admin-msg { font-size: 0.7rem; }
+
+        .admin-input {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-stone);
+            border-radius: 12px;
+            padding: 10px;
+            font-weight: 500;
+            color: var(--text-dark);
+            outline: none;
+            text-align: center;
+            width: 120px;
+        }
+        .admin-input:focus {
+            border-color: var(--color-primary);
+        }
+        .admin-msg {
+            margin-top: 10px;
+            font-size: 0.7rem;
+        }
 
         .footer {
             background: #2c2418;
@@ -266,7 +280,9 @@
             padding: 40px 0 20px;
             margin-top: 40px;
         }
-        .footer p { font-size: 0.85rem; }
+        .footer p {
+            font-size: 0.85rem;
+        }
 
         @media (max-width: 768px) {
             .hero p { font-size: 1rem; }
@@ -280,14 +296,14 @@
 </head>
 <body>
 
-    <!-- ========== SECCIÓN HERO (IMAGEN DE CABECERA) ========== -->
+    <!-- SECCIÓN HERO (IMAGEN DE CABECERA) -->
     <section id="inicio" class="hero" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/imagenes/Encabezado.png') center/cover no-repeat;">
         <div class="hero-content">
             <p>Calculadoras profesionales para panaderos. Optimiza tus costos, ajusta recetas y gestiona tu producción.</p>
         </div>
     </section>
 
-    <!-- ========== MENÚ DE NAVEGACIÓN (AHORA DEBAJO DEL HERO) ========== -->
+    <!-- MENÚ DE NAVEGACIÓN -->
     <nav class="navbar">
         <div class="container nav-container">
             <div class="nav-links">
@@ -299,7 +315,7 @@
         </div>
     </nav>
 
-    <!-- ========== RESTO DE LA PÁGINA (SIN CAMBIOS ESTRUCTURALES) ========== -->
+    <!-- RESTO DE LA PÁGINA -->
     <main class="container">
         <!-- NUESTRO OBJETIVO -->
         <section id="objetivo" class="section">
@@ -361,7 +377,7 @@
     </footer>
 
     <script>
-        // ========== DATOS Y FUNCIONES (SIN CAMBIOS) ==========
+        // ========== LISTA DE PRODUCTOS ==========
         const productos = [
             { nombre: "Pan Campesino", url: "/calculadoras/pan-campesino/", img: "/imagenes/pan-campesino.webp" },
             { nombre: "Pan Francés", url: "/calculadoras/pan-frances/", img: "/imagenes/pan-frances.webp" },
@@ -376,7 +392,7 @@
             { nombre: "Arepas de Trigo", url: "/calculadoras/arepas-trigo/", img: "/imagenes/arepas-trigo.webp" },
             { nombre: "Arepas de Maíz", url: "/calculadoras/arepas-maiz/", img: "/imagenes/arepas-maiz.webp" },
             { nombre: "Catalinas Amarillas", url: "/calculadoras/catalinas-amarillas/", img: "/imagenes/catalinas-amarillas.webp" },
-            { nombre: "Galletas de Huevo", url: "/calculadoras/galletas-huevo/", img: "/imagenes/galletas-huevo.webp" }
+            { nombre: "Galletas de Huevo", url: "/calculadoras/galletas-huevo/", img: "/imagenes/galletas_de_huevo.jpg" }
         ];
 
         function cargarProductos() {
@@ -397,9 +413,8 @@
         document.addEventListener('DOMContentLoaded', cargarProductos);
     </script>
 
-    <!-- ========== CRONÓMETRO Y ADMIN (SIN CAMBIOS EN LA LÓGICA) ========== -->
+    <!-- ========== CRONÓMETRO Y ADMIN ========== -->
     <script>
-        // Función para cargar las herramientas dinámicamente
         function cargarHerramientas() {
             const toolsGrid = document.getElementById('toolsGrid');
             if (!toolsGrid) return;
@@ -427,4 +442,125 @@
                     <i class="fas fa-book-open"></i>
                     <h3>Guía de ingredientes</h3>
                     <p>Conoce las propiedades de cada ingrediente y su uso.</p>
-                    <a
+                    <a href="#">Próximamente →</a>
+                </div>
+                <div class="tool-card">
+                    <i class="fas fa-stopwatch"></i>
+                    <h3>Cronómetro de horneado</h3>
+                    <p>Controla el tiempo de horneado con alarmas para voltear y retirar.</p>
+                    <div style="margin-top: 15px;">
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;">
+                            <input type="number" id="cronMinutos" class="cronometro-input" value="25" min="1" max="120" step="1">
+                            <span>minutos</span>
+                        </div>
+                        <div id="cronDisplay" class="cronometro-display">00:00</div>
+                        <div style="display: flex; gap: 10px; justify-content: center;">
+                            <button id="cronStart" class="cronometro-boton cronometro-boton-start">▶ Iniciar</button>
+                            <button id="cronStop" class="cronometro-boton cronometro-boton-stop">⏹ Detener</button>
+                            <button id="cronReset" class="cronometro-boton cronometro-boton-reset">⟳ Reiniciar</button>
+                        </div>
+                        <div id="cronEstado" class="cronometro-estado">⏳ Esperando inicio</div>
+                    </div>
+                </div>
+                <!-- MÓDULO DE ADMINISTRACIÓN -->
+                <div class="tool-card">
+                    <i class="fas fa-lock"></i>
+                    <h3>Administración</h3>
+                    <p>Acceso restringido al panel de gestión de precios.</p>
+                    <div style="margin-top: 15px;">
+                        <div style="display: flex; justify-content: center; margin-bottom: 10px;">
+                            <input type="password" id="adminClave" class="admin-input" placeholder="Clave">
+                        </div>
+                        <div style="display: flex; gap: 10px; justify-content: center;">
+                            <button id="adminAccederBtn" class="cronometro-boton cronometro-boton-start">🔓 Acceder</button>
+                        </div>
+                        <div id="adminMsg" class="admin-msg"></div>
+                    </div>
+                </div>
+            `;
+
+            inicializarCronometro();
+            inicializarAdmin();
+        }
+
+        function inicializarCronometro() {
+            let cronTiempoTotal = 0, cronTiempoRestante = 0, cronActivo = false, cronIntervalo = null, cronVolteoActivado = false;
+            const cronInput = document.getElementById('cronMinutos');
+            const cronDisplay = document.getElementById('cronDisplay');
+            const cronEstado = document.getElementById('cronEstado');
+            const cronStartBtn = document.getElementById('cronStart');
+            const cronStopBtn = document.getElementById('cronStop');
+            const cronResetBtn = document.getElementById('cronReset');
+            if (!cronStartBtn) return;
+
+            function actualizarDisplay() {
+                const minutos = Math.floor(cronTiempoRestante / 60);
+                const segundos = cronTiempoRestante % 60;
+                cronDisplay.textContent = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+            }
+            function iniciar() {
+                if (cronActivo) detener();
+                const minutos = parseInt(cronInput.value) || 0;
+                if (minutos <= 0) { cronEstado.textContent = '⚠️ Ingresa un tiempo válido'; return; }
+                cronTiempoTotal = minutos * 60;
+                cronTiempoRestante = cronTiempoTotal;
+                cronVolteoActivado = false;
+                cronActivo = true;
+                actualizarDisplay();
+                cronEstado.textContent = '🔥 Horneando...';
+                cronEstado.style.color = '#D2691E';
+                cronIntervalo = setInterval(() => {
+                    if (cronTiempoRestante <= 0) {
+                        detener();
+                        cronEstado.textContent = '✅ ¡Horneado completado! Retirar del horno';
+                        cronEstado.style.color = '#4caf50';
+                    } else {
+                        cronTiempoRestante--;
+                        actualizarDisplay();
+                        const tiempoTranscurrido = cronTiempoTotal - cronTiempoRestante;
+                        if (!cronVolteoActivado && tiempoTranscurrido >= cronTiempoTotal / 2) {
+                            cronVolteoActivado = true;
+                            cronEstado.textContent = '🔄 ¡Voltear las latas!';
+                            cronEstado.style.color = '#ffaa44';
+                            setTimeout(() => { if (cronActivo) { cronEstado.textContent = '🔥 Horneando...'; cronEstado.style.color = '#D2691E'; } }, 5000);
+                        }
+                    }
+                }, 1000);
+            }
+            function detener() { if (cronIntervalo) { clearInterval(cronIntervalo); cronIntervalo = null; } cronActivo = false; cronEstado.textContent = '⏸️ Detenido'; cronEstado.style.color = '#8B7355'; }
+            function reiniciar() { detener(); const minutos = parseInt(cronInput.value) || 0; cronTiempoTotal = minutos * 60; cronTiempoRestante = cronTiempoTotal; cronVolteoActivado = false; actualizarDisplay(); cronEstado.textContent = '⟳ Reiniciado. Presiona Iniciar'; cronEstado.style.color = '#8B7355'; }
+            cronStartBtn.onclick = iniciar;
+            cronStopBtn.onclick = detener;
+            cronResetBtn.onclick = reiniciar;
+            reiniciar();
+        }
+
+        function inicializarAdmin() {
+            const adminInput = document.getElementById('adminClave');
+            const adminBtn = document.getElementById('adminAccederBtn');
+            const adminMsg = document.getElementById('adminMsg');
+            if (!adminBtn) return;
+            const CLAVE_ADMIN = "1234";
+            function acceder() {
+                if (adminInput.value === CLAVE_ADMIN) {
+                    adminMsg.textContent = '✅ Acceso concedido. Redirigiendo...';
+                    adminMsg.style.color = '#4caf50';
+                    setTimeout(() => window.location.href = '/admin.html', 1000);
+                } else {
+                    adminMsg.textContent = '❌ Clave incorrecta. Acceso denegado.';
+                    adminMsg.style.color = '#e53e3e';
+                    adminInput.value = '';
+                    adminInput.focus();
+                }
+            }
+            adminBtn.onclick = acceder;
+            adminInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') acceder(); });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarProductos();
+            cargarHerramientas();
+        });
+    </script>
+</body>
+</html>
