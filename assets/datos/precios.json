@@ -41,7 +41,7 @@
     },
     {
         "nombre": "Margarina",
-        "precioKg": 5.2
+        "precioKg": 5.5
     },
     {
         "nombre": "Bicarbonato",
@@ -77,6 +77,6 @@
     },
     {
         "nombre": "Leche en polvo",
-        "precioKg": 18.5
+        "precioKg": 11
     }
 ]
