@@ -24,10 +24,11 @@ function calcular() {
     const contenedor = document.getElementById('listaIngredientes');
     contenedor.innerHTML = '';
 
-    let masaTotal = 0;
+    let totalMasa = 0;
+    let totalRelleno = 0;
     let costoTotal = 0;
 
-    // 1. Calcular el peso total de la masa (solo ingredientes que NO son relleno)
+    // 1. Calcular el peso base de la masa (solo ingredientes que NO son relleno)
     let pesoMasaPorUnidad = 0;
     window.datosProducto.items.forEach(ing => {
         if (!ing.esRelleno) {
@@ -39,15 +40,14 @@ function calcular() {
     let grupoActual = "";
 
     window.datosProducto.items.forEach(ing => {
-        // Añadir encabezado de grupo si cambia
+        // Encabezados de grupo
         if (ing.grupo && ing.grupo !== grupoActual) {
             grupoActual = ing.grupo;
             let claseGrupo = grupoActual.toLowerCase() === 'relleno' ? 'grupo-relleno' : 'grupo-masa';
             contenedor.innerHTML += `<div class="grupo-header ${claseGrupo}">${grupoActual}</div>`;
         }
 
-        // Lógica de cálculo:
-        // Si es relleno, la base es el peso de la masa. Si no, es la harina.
+        // Lógica de cálculo: Si es relleno, la base es el peso de la masa.
         let baseCalculo = (window.datosProducto.harinaPorUnidad * panes);
         if (ing.esRelleno) {
             baseCalculo = pesoMasaPorUnidad * panes;
@@ -57,10 +57,14 @@ function calcular() {
         const divisor = (ing.nombre === "Huevos" || ing.nombre === "Huevo") ? 1500 : 1000;
         const costo = (gramos / divisor) * ing.precioKg;
 
-        masaTotal += gramos;
+        // Acumular pesos
+        if (ing.esRelleno) {
+            totalRelleno += gramos;
+        } else {
+            totalMasa += gramos;
+        }
         costoTotal += costo;
 
-        // Clase para colorear los datos
         let claseItem = ing.esRelleno ? 'item-relleno' : 'item-masa';
 
         contenedor.innerHTML += `
@@ -77,25 +81,47 @@ function calcular() {
         `;
     });
 
-    document.getElementById('resMasa').innerText = `${masaTotal.toFixed(1)} g`;
+    const granTotal = totalMasa + totalRelleno;
+
+    // 3. Actualizar la interfaz (Soporta tanto 1 como 3 tarjetas)
+    const elMasa = document.getElementById('resMasa');
+    const elRelleno = document.getElementById('resRelleno');
+    const elTotal = document.getElementById('resTotal');
+
+    if (elTotal) {
+        // Es la calculadora de Pan de Jamón (tiene 3 tarjetas)
+        if (elMasa) elMasa.innerText = `${totalMasa.toFixed(1)} g`;
+        if (elRelleno) elRelleno.innerText = `${totalRelleno.toFixed(1)} g`;
+        elTotal.innerText = `${granTotal.toFixed(1)} g`;
+    } else if (elMasa) {
+        // Son las calculadoras normales (solo 1 tarjeta)
+        elMasa.innerText = `${granTotal.toFixed(1)} g`;
+    }
+
     document.getElementById('resCosto').innerText = `$ ${costoTotal.toFixed(2)}`;
 }
 
 function copiarAlPortapapeles() {
     const panes = document.getElementById('inputPanes').value;
-    const masaTotalStr = document.getElementById('resMasa').innerText;
     const costoTotalStr = document.getElementById('resCosto').innerText;
+    
+    // Obtener el peso total dependiendo del tipo de calculadora
+    let pesoTotalStr = "0 g";
+    if (document.getElementById('resTotal')) {
+        pesoTotalStr = document.getElementById('resTotal').innerText;
+    } else if (document.getElementById('resMasa')) {
+        pesoTotalStr = document.getElementById('resMasa').innerText;
+    }
 
     let textoCopiar = `${window.datosProducto.nombre.toUpperCase()}\n`;
     textoCopiar += `━━━━━━━━━━━━━━━━\n`;
     textoCopiar += `Cantidad: ${panes} unidad(es)\n`;
     textoCopiar += `Costo insumos: ${costoTotalStr}\n`;
-    textoCopiar += `Masa total: ${masaTotalStr}\n`;
+    textoCopiar += `Peso total: ${pesoTotalStr}\n`;
     textoCopiar += `━━━━━━━━━━━━━━━━\n`;
     textoCopiar += `LISTA DE INSUMOS:\n\n`;
 
     let grupoActual = "";
-    // Recalcular el peso de la masa para el texto copiado
     let pesoMasaPorUnidad = 0;
     window.datosProducto.items.forEach(ing => {
         if (!ing.esRelleno) pesoMasaPorUnidad += (window.datosProducto.harinaPorUnidad * (ing.pct / 100));
