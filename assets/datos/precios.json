@@ -91,4 +91,8 @@
         "nombre": "Mostaza",
         "precioKg": 10
     }
+    { "nombre": "Tocineta", "precioKg": 8.00 },
+    { "nombre": "Pasas", "precioKg": 5.00 },
+    { "nombre": "Aceitunas", "precioKg": 6.00 },
+    { "nombre": "Mostaza", "precioKg": 4.00 },
 ]
