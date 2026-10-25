@@ -1,7 +1,3 @@
-// ============================================
-// FUNCIONES COMPARTIDAS - PANADERÍA WEB
-// ============================================
-
 const WEB_APP_URL = "/assets/datos/precios.json";
 
 async function sincronizarPrecios() {
@@ -31,16 +27,44 @@ function calcular() {
     let masaTotal = 0;
     let costoTotal = 0;
 
+    // 1. Calcular el peso total de la masa (solo ingredientes que NO son relleno)
+    let pesoMasaPorUnidad = 0;
     window.datosProducto.items.forEach(ing => {
-        const gramos = (window.datosProducto.harinaPorUnidad * panes) * (ing.pct / 100);
-        const divisor = (ing.nombre === "Huevos") ? 1500 : 1000;
+        if (!ing.esRelleno) {
+            pesoMasaPorUnidad += (window.datosProducto.harinaPorUnidad * (ing.pct / 100));
+        }
+    });
+
+    // 2. Generar la lista
+    let grupoActual = "";
+
+    window.datosProducto.items.forEach(ing => {
+        // Añadir encabezado de grupo si cambia
+        if (ing.grupo && ing.grupo !== grupoActual) {
+            grupoActual = ing.grupo;
+            let claseGrupo = grupoActual.toLowerCase() === 'relleno' ? 'grupo-relleno' : 'grupo-masa';
+            contenedor.innerHTML += `<div class="grupo-header ${claseGrupo}">${grupoActual}</div>`;
+        }
+
+        // Lógica de cálculo:
+        // Si es relleno, la base es el peso de la masa. Si no, es la harina.
+        let baseCalculo = (window.datosProducto.harinaPorUnidad * panes);
+        if (ing.esRelleno) {
+            baseCalculo = pesoMasaPorUnidad * panes;
+        }
+
+        const gramos = baseCalculo * (ing.pct / 100);
+        const divisor = (ing.nombre === "Huevos" || ing.nombre === "Huevo") ? 1500 : 1000;
         const costo = (gramos / divisor) * ing.precioKg;
 
         masaTotal += gramos;
         costoTotal += costo;
 
+        // Clase para colorear los datos
+        let claseItem = ing.esRelleno ? 'item-relleno' : 'item-masa';
+
         contenedor.innerHTML += `
-            <div class="ingredient-item">
+            <div class="ingredient-item ${claseItem}">
                 <div>
                     <span class="ingredient-name">${ing.nombre}</span>
                     <span class="ingredient-percent">(${ing.pct}%)</span>
@@ -53,7 +77,7 @@ function calcular() {
         `;
     });
 
-    document.getElementById('resMasa').innerText = `${masaTotal.toFixed(0)} g`;
+    document.getElementById('resMasa').innerText = `${masaTotal.toFixed(1)} g`;
     document.getElementById('resCosto').innerText = `$ ${costoTotal.toFixed(2)}`;
 }
 
@@ -70,8 +94,23 @@ function copiarAlPortapapeles() {
     textoCopiar += `━━━━━━━━━━━━━━━━\n`;
     textoCopiar += `LISTA DE INSUMOS:\n\n`;
 
+    let grupoActual = "";
+    // Recalcular el peso de la masa para el texto copiado
+    let pesoMasaPorUnidad = 0;
     window.datosProducto.items.forEach(ing => {
-        const gramos = (window.datosProducto.harinaPorUnidad * panes) * (ing.pct / 100);
+        if (!ing.esRelleno) pesoMasaPorUnidad += (window.datosProducto.harinaPorUnidad * (ing.pct / 100));
+    });
+
+    window.datosProducto.items.forEach(ing => {
+        if (ing.grupo && ing.grupo !== grupoActual) {
+            grupoActual = ing.grupo;
+            textoCopiar += `*${grupoActual.toUpperCase()}*\n`;
+        }
+        
+        let baseCalculo = (window.datosProducto.harinaPorUnidad * panes);
+        if (ing.esRelleno) baseCalculo = pesoMasaPorUnidad * panes;
+        
+        const gramos = baseCalculo * (ing.pct / 100);
         textoCopiar += `${ing.nombre}: ${gramos.toFixed(1)} g\n`;
     });
 
