@@ -78,5 +78,9 @@
     {
         "nombre": "Leche en polvo",
         "precioKg": 11
+    },
+    {
+        "nombre": "Jamon Ahumado",
+        "precioKg": 11
     }
 ]
