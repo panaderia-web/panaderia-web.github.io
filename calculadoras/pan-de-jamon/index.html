@@ -9,20 +9,44 @@
     <link rel="stylesheet" href="/assets/css/estilo-comun.css">
     
     <style>
+        /* Estilos específicos para el botón wake lock */
         .btn-wakelock-header {
-            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-            background: rgba(255,255,255,0.2); backdrop-filter: blur(6px);
-            width: 32px; height: 32px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            border: 1px solid rgba(252, 249, 245, 0.3); cursor: pointer;
-            transition: all 0.2s ease; color: white; font-size: 0.85rem;
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(6px);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(252, 249, 245, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: white;
+            font-size: 0.85rem;
         }
-        .btn-wakelock-header:hover { background: rgba(255,255,255,0.3); }
-        .btn-wakelock-active { background: #4caf50 !important; }
+        .btn-wakelock-header:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .btn-wakelock-active {
+            background: #4caf50 !important;
+        }
         .wakelock-status-msg {
-            position: fixed; bottom: 20px; left: 20px; background: rgba(0,0,0,0.8); color: white;
-            padding: 8px 16px; border-radius: 20px; font-size: 0.7rem; z-index: 10000;
-            display: none; font-family: monospace;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            z-index: 10000;
+            display: none;
+            font-family: monospace;
         }
     </style>
     
@@ -31,7 +55,7 @@
             nombre: "Pan de Jamón",
             harinaPorUnidad: 252.0,
             items: [
-                // GRUPO: MASA
+                // --- GRUPO: MASA ---
                 { nombre: "Harina", pct: 100.0, precioKg: 0, grupo: "Masa" },
                 { nombre: "Agua", pct: 50.0, precioKg: 0, grupo: "Masa" },
                 { nombre: "Levadura", pct: 2.0, precioKg: 0, grupo: "Masa" },
@@ -40,7 +64,7 @@
                 { nombre: "Azucar", pct: 10.0, precioKg: 0, grupo: "Masa" },
                 { nombre: "Huevo", pct: 5.0, precioKg: 0, grupo: "Masa" },
                 
-                // GRUPO: RELLENO (se calcula sobre el peso de la masa)
+                // --- GRUPO: RELLENO (Calculado sobre el peso de la masa) ---
                 { nombre: "Jamon Ahumado", pct: 96.0, precioKg: 0, grupo: "Relleno", esRelleno: true },
                 { nombre: "Tocineta", pct: 23.0, precioKg: 0, grupo: "Relleno", esRelleno: true },
                 { nombre: "Papelon", pct: 4.0, precioKg: 0, grupo: "Relleno", esRelleno: true },
@@ -55,9 +79,13 @@
 
 <div class="product-card">
     <div class="product-header" style="position: relative;">
-        <a href="/" class="back-button"><i class="fas fa-arrow-left"></i></a>
+        <a href="/" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </a>
         <h1>PAN DE JAMÓN</h1>
         <p>Fernando Araujo</p>
+        
+        <!-- Botón para mantener pantalla activa -->
         <div id="wakelockBtn" class="btn-wakelock-header" onclick="toggleWakeLock()">
             <i class="fas fa-mobile-alt"></i>
         </div>
@@ -87,7 +115,9 @@
     </div>
 
     <div class="ingredients-list">
-        <div class="section-title"><i class="fas fa-flour"></i> Ingredientes</div>
+        <div class="section-title">
+            <i class="fas fa-flour"></i> Ingredientes
+        </div>
         <div id="listaIngredientes"></div>
     </div>
 
@@ -95,14 +125,21 @@
         <button class="btn-copy" onclick="copiarAlPortapapeles()">
             <i class="fas fa-copy"></i> Copiar lista
         </button>
-        <div id="copyMessage" class="copy-message"><i class="fas fa-check-circle"></i> ¡Lista copiada!</div>
+        <div id="copyMessage" class="copy-message">
+            <i class="fas fa-check-circle"></i> ¡Lista copiada!
+        </div>
     </div>
 
-    <div class="footer-brand"><span>Gestión profesional de panadería</span></div>
+    <div class="footer-brand">
+        <span>Gestión profesional de panadería</span>
+    </div>
 </div>
 
+<!-- Mensaje de estado del Wake Lock -->
 <div id="wakelockStatus" class="wakelock-status-msg"></div>
+
 <script src="/assets/js/funciones-comunes.js"></script>
+
 <script>
     let wakeLock = null;
     let wakeLockActivo = false;
@@ -111,7 +148,10 @@
 
     async function toggleWakeLock() {
         if (wakeLockActivo) {
-            if (wakeLock) { await wakeLock.release(); wakeLock = null; }
+            if (wakeLock) {
+                await wakeLock.release();
+                wakeLock = null;
+            }
             wakeLockActivo = false;
             btn.classList.remove('btn-wakelock-active');
             statusDiv.textContent = '⚡ Pantalla normal';
@@ -127,6 +167,7 @@
                 statusDiv.style.background = "#4caf50";
                 statusDiv.style.display = 'block';
                 setTimeout(() => { statusDiv.style.display = 'none'; }, 3000);
+                
                 document.addEventListener('visibilitychange', async () => {
                     if (wakeLockActivo && document.visibilityState === 'visible') {
                         try { wakeLock = await navigator.wakeLock.request('screen'); } catch(e) {}
@@ -141,5 +182,6 @@
         }
     }
 </script>
+
 </body>
 </html>
