@@ -94,5 +94,9 @@
     {
         "nombre": "Pasas",
         "precioKg": 6
+    },
+    {
+        "nombre": "Aceitunas",
+        "precioKg": 10
     }
 ]
