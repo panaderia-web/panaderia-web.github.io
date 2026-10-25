@@ -82,5 +82,13 @@
     {
         "nombre": "Jamon Ahumado",
         "precioKg": 11
+    },
+    {
+        "nombre": "Tocineta",
+        "precioKg": 16
+    },
+    {
+        "nombre": "Mostaza",
+        "precioKg": 10
     }
 ]
