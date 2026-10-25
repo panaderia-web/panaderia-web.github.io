@@ -90,5 +90,9 @@
     {
         "nombre": "Mostaza",
         "precioKg": 10
+    },
+    {
+        "nombre": "Pasas",
+        "precioKg": 6
     }
 ]
