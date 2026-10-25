@@ -54,7 +54,7 @@ function calcular() {
         }
 
         const gramos = baseCalculo * (ing.pct / 100);
-        const divisor = (ing.nombre === "Huevos" || ing.nombre === "Huevo") ? 1500 : 1000;
+        const divisor = (ing.nombre === "Huevos" || ing.nombre === "Huevos") ? 1500 : 1000;
         const costo = (gramos / divisor) * ing.precioKg;
 
         // Acumular pesos
